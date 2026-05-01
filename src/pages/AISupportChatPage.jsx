@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams, useNavigate, Link } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import { supabase } from "../lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -32,6 +32,7 @@ const fileToBase64 = (file) => {
 
 function AISupportChatPage({ session }) {
   const user = session?.user ?? null;
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [chatSessions, setChatSessions] = useState([]);
   const [selectedSessionId, setSelectedSessionId] = useState(null);
@@ -59,6 +60,7 @@ function AISupportChatPage({ session }) {
   const [sessionSearchQuery, setSessionSearchQuery] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [guestMessageCount, setGuestMessageCount] = useState(0);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   
@@ -207,7 +209,6 @@ function AISupportChatPage({ session }) {
     }
   }, [activeThread]);
 
-  if (!user) return <Navigate replace to="/login" />;
 
   const createAssistantResponse = async (message) => {
     if (!aiApiKey) return "I hear you. Thank you for opening up. Let's work through this one step at a time. 💙";
@@ -339,21 +340,24 @@ function AISupportChatPage({ session }) {
     }
 
     setIsStreaming(false);
-    await supabase.from("chat_messages").insert({ 
-      session_id: currentSessionId, 
-      sender: "assistant", 
-      message: assistantReply,
-      parent_id: userMsgId
-    });
-    loadMessages(currentSessionId);
+    
+    if (user) {
+      await supabase.from("chat_messages").insert({ 
+        session_id: currentSessionId, 
+        sender: "assistant", 
+        message: assistantReply,
+        parent_id: userMsgId
+      });
+      loadMessages(currentSessionId);
+    }
   };
 
   const handleSendMessage = async (event) => {
     if (event) event.preventDefault();
-    if (isStreaming || !supabase || (!chatInput.trim() && selectedFiles.length === 0)) return;
+    if (isStreaming || (!chatInput.trim() && selectedFiles.length === 0)) return;
     
     let currentSessionId = selectedSessionId;
-    if (!currentSessionId) {
+    if (user && !currentSessionId) {
       const { data, error } = await supabase
         .from("chat_sessions")
         .insert({
@@ -409,29 +413,53 @@ function AISupportChatPage({ session }) {
     const activeLeaf = activeThread.length > 0 ? activeThread[activeThread.length - 1] : null;
     const parentId = activeLeaf ? activeLeaf.id : null;
 
-    const { data: newUserMsg } = await supabase.from("chat_messages").insert({ 
-      session_id: currentSessionId, 
-      sender: "user", 
-      message: messageText,
-      attachments: uploadedAttachments.length > 0 ? uploadedAttachments : [],
-      parent_id: parentId
-    }).select().single();
-    
-    if (newUserMsg) {
-      setActiveBranchSelections(prev => ({
-        ...prev,
-        [parentId || 'root']: newUserMsg.id
-      }));
+    if (user) {
+      const { data: newUserMsg } = await supabase.from("chat_messages").insert({ 
+        session_id: currentSessionId, 
+        sender: "user", 
+        message: messageText,
+        attachments: uploadedAttachments.length > 0 ? uploadedAttachments : [],
+        parent_id: parentId
+      }).select().single();
+      
+      if (newUserMsg) {
+        setActiveBranchSelections(prev => ({
+          ...prev,
+          [parentId || 'root']: newUserMsg.id
+        }));
 
-      const imageParts = [];
-      if (currentFiles.length > 0 && genAI) {
-        for (const item of currentFiles) {
-          const base64Data = await fileToBase64(item.file);
-          imageParts.push({ inlineData: { data: base64Data, mimeType: item.file.type } });
+        const imageParts = [];
+        if (currentFiles.length > 0 && genAI) {
+          for (const item of currentFiles) {
+            const base64Data = await fileToBase64(item.file);
+            imageParts.push({ inlineData: { data: base64Data, mimeType: item.file.type } });
+          }
         }
+
+        await streamAssistantResponse(newUserMsg.id, messageText, imageParts, currentSessionId);
+      }
+    } else {
+      // Guest Mode Logic
+      if (guestMessageCount >= 5) {
+        setFeedback("Message limit reached for guests. Please log in to continue. 💙");
+        return;
       }
 
-      await streamAssistantResponse(newUserMsg.id, messageText, imageParts, currentSessionId);
+      const tempUserMsgId = "guest-user-" + Date.now();
+      const newUserMsg = {
+        id: tempUserMsgId,
+        sender: "user",
+        message: messageText,
+        attachments: [], // No file uploads for guests to save storage/bandwidth
+        created_at: new Date().toISOString(),
+        parent_id: parentId
+      };
+
+      setChatMessages(prev => [...prev, newUserMsg]);
+      setGuestMessageCount(prev => prev + 1);
+
+      const imageParts = []; // Skip images for guests for now as they require processing
+      await streamAssistantResponse(tempUserMsgId, messageText, imageParts, null);
     }
   };
 
@@ -830,6 +858,29 @@ function AISupportChatPage({ session }) {
           {activeThread.length === 0 ? (
             /* Empty State */
             <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-3xl mx-auto w-full h-full overflow-y-auto">
+              {!user && (
+                <div className="w-full mb-8">
+                  <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex items-start gap-4 text-left">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-primary">info</span>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-primary mb-1">Chatting as Guest</h4>
+                        <p className="text-sm text-on-surface-variant leading-relaxed">
+                          Your responses won't be saved. Guests are limited to 5 messages.
+                        </p>
+                      </div>
+                    </div>
+                    <Link 
+                      to="/login" 
+                      className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md hover:scale-105 transition-all whitespace-nowrap active:scale-95"
+                    >
+                      Log In to Save
+                    </Link>
+                  </div>
+                </div>
+              )}
               <h1 className="text-3xl font-semibold text-slate-800 mb-8">What can I help with?</h1>
               
               <div className="w-full">
@@ -852,6 +903,30 @@ function AISupportChatPage({ session }) {
             /* Active Chat State */
             <>
               <div className="flex-1 overflow-y-auto w-full pb-40" ref={chatContainerRef}>
+                {!user && (
+                  <div className="max-w-3xl mx-auto w-full p-4 md:p-6 mt-4">
+                    <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <span className="material-symbols-outlined text-primary">info</span>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-primary mb-1">Chatting as Guest</h4>
+                          <p className="text-sm text-on-surface-variant leading-relaxed">
+                            Your responses won't be saved and your journey won't be synced across devices. 
+                            Guests are limited to 5 messages.
+                          </p>
+                        </div>
+                      </div>
+                      <Link 
+                        to="/login" 
+                        className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md hover:scale-105 transition-all whitespace-nowrap active:scale-95"
+                      >
+                        Log In to Save
+                      </Link>
+                    </div>
+                  </div>
+                )}
                 <div className="max-w-3xl mx-auto w-full p-4 md:p-6 space-y-8">
                   {activeThread.map((message) => (
                     <div key={message.id} className={`flex gap-4 w-full group ${message.sender === "user" ? "justify-end" : "justify-start"}`}>

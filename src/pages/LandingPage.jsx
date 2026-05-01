@@ -86,19 +86,19 @@ function LandingPage() {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
-              <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center">
+              <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center hover:scale-105 hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 cursor-default">
                 <span className="text-h1 font-h1 text-primary mb-xs">24/7</span>
                 <p className="font-body-sm text-on-surface-variant font-medium">
                   Always Available Support
                 </p>
               </div>
-              <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center">
+              <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center hover:scale-105 hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 cursor-default">
                 <span className="text-h1 font-h1 text-primary mb-xs">100%</span>
                 <p className="font-body-sm text-on-surface-variant font-medium">
                   Private &amp; Local Hosting
                 </p>
               </div>
-              <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center">
+              <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center hover:scale-105 hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 cursor-default">
                 <span className="text-h1 font-h1 text-primary mb-xs">0s</span>
                 <p className="font-body-sm text-on-surface-variant font-medium">
                   Waiting Time for Crisis Aid

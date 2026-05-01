@@ -103,11 +103,7 @@ function App() {
         path="/dashboard/quick-mood-checkin"
       />
       <Route
-        element={
-          <AuthRoute mode="private" session={session}>
-            <AISupportChatPage session={session} />
-          </AuthRoute>
-        }
+        element={<AISupportChatPage session={session} />}
         path="/dashboard/ai-support-chat"
       />
       <Route
