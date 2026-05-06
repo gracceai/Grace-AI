@@ -30,6 +30,7 @@ function ForgotPasswordPage() {
       email: email.trim(),
       options: {
         shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/reset-password`,
       },
     });
     setSendingCode(false);
@@ -39,7 +40,11 @@ function ForgotPasswordPage() {
       return;
     }
 
-    setFeedback({ type: "success", message: "Verification code sent to your email." });
+    setFeedback({
+      type: "success",
+      message:
+        "Verification sent. If your Supabase Email provider is configured for OTP, you'll get a code. If configured for magic links, you'll get a secure link.",
+    });
     setShowResetPopup(true);
   };
 
@@ -106,7 +111,7 @@ function ForgotPasswordPage() {
             <div className="text-center mb-8">
               <h1 className="font-h2 text-h3 text-primary mb-2">Let&apos;s get you back in</h1>
               <p className="font-body-md text-on-surface-variant max-w-[320px] mx-auto">
-                Enter your email and we&apos;ll send you a link to reset your password
+                Enter your email and we&apos;ll send verification so you can reset your password
               </p>
             </div>
 
@@ -151,6 +156,10 @@ function ForgotPasswordPage() {
                 Back to Login
               </Link>
             </div>
+            <p className="text-xs text-slate-500 mt-4">
+              Note: OTP code delivery depends on Supabase Email settings. If your project is set to magic-link
+              mode, use the link from the email to continue.
+            </p>
           </div>
         </div>
       </main>

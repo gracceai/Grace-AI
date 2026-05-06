@@ -40,6 +40,42 @@ const diseaseTabs = [
     code: "epilepsy",
     title: "Epilepsy Support",
   },
+  {
+    code: "depression",
+    title: "Depression Support",
+  },
+  {
+    code: "anxiety",
+    title: "Anxiety Support",
+  },
+  {
+    code: "bipolar",
+    title: "Bipolar Support",
+  },
+  {
+    code: "ptsd",
+    title: "PTSD Support",
+  },
+  {
+    code: "schizophrenia",
+    title: "Schizophrenia Support",
+  },
+  {
+    code: "ocd",
+    title: "OCD Support",
+  },
+  {
+    code: "adhd",
+    title: "ADHD Support",
+  },
+  {
+    code: "substance-use",
+    title: "Substance Use Support",
+  },
+  {
+    code: "eating-disorders",
+    title: "Eating Disorder Support",
+  },
 ];
 
 const supportResources = [
@@ -314,6 +350,156 @@ const supportResources = [
     sourceName: "WHO mhGAP Epilepsy Resources",
     sourceUrl: "https://www.who.int/teams/mental-health-and-substance-use/treatment-care/mental-health-gap-action-programme",
   },
+  {
+    id: "depression-early-help",
+    condition: "depression",
+    category: "Clinical Care",
+    title: "Recognize depression early and seek evidence-based care",
+    summary:
+      "WHO and NIMH guidance support early recognition, structured therapy, and, when needed, medication under professional supervision.",
+    actions: [
+      "Track low mood, sleep, appetite, and concentration changes over time.",
+      "Seek professional assessment when symptoms persist for 2 weeks or more.",
+      "Use psychotherapy and/or medication plans as guided by clinicians.",
+    ],
+    sourceName: "WHO Depression Fact Sheet",
+    sourceUrl: "https://www.who.int/news-room/fact-sheets/detail/depression",
+  },
+  {
+    id: "depression-social",
+    condition: "depression",
+    category: "Social Support",
+    title: "Use trusted support circles to reduce isolation",
+    summary:
+      "Social support lowers relapse risk and improves treatment adherence in depressive disorders.",
+    actions: [
+      "Share a simple support plan with one trusted person.",
+      "Ask for practical help with routines during difficult periods.",
+      "Schedule regular social check-ins to reduce withdrawal.",
+    ],
+    sourceName: "NIMH Depression",
+    sourceUrl: "https://www.nimh.nih.gov/health/topics/depression",
+  },
+  {
+    id: "anxiety-care",
+    condition: "anxiety",
+    category: "Clinical Care",
+    title: "Treat anxiety with structured coping and professional care",
+    summary:
+      "Anxiety disorders respond to structured therapy approaches and targeted coping skills.",
+    actions: [
+      "Use paced breathing and grounding in acute anxiety spikes.",
+      "Consider CBT-based support where available.",
+      "Get professional assessment when anxiety disrupts daily function.",
+    ],
+    sourceName: "NIMH Anxiety Disorders",
+    sourceUrl: "https://www.nimh.nih.gov/health/topics/anxiety-disorders",
+  },
+  {
+    id: "ptsd-safety",
+    condition: "ptsd",
+    category: "Health Rights",
+    title: "Create trauma-informed and stigma-free care spaces",
+    summary:
+      "People with PTSD benefit from predictable, respectful, trauma-informed support environments.",
+    actions: [
+      "Use consent-based communication in care conversations.",
+      "Avoid forcing exposure to triggering content unexpectedly.",
+      "Support access to trauma-focused therapy options.",
+    ],
+    sourceName: "SAMHSA Trauma-Informed Care",
+    sourceUrl: "https://www.samhsa.gov/trauma-violence",
+  },
+  {
+    id: "bipolar-continuity",
+    condition: "bipolar",
+    category: "Prevention",
+    title: "Protect continuity of care to reduce episode relapse",
+    summary:
+      "Consistent follow-up and medication adherence reduce relapse and improve functioning in bipolar disorder.",
+    actions: [
+      "Keep regular follow-up appointments during stable periods.",
+      "Track sleep changes as early warning signs.",
+      "Use family or peer support for routine adherence.",
+    ],
+    sourceName: "NIMH Bipolar Disorder",
+    sourceUrl: "https://www.nimh.nih.gov/health/topics/bipolar-disorder",
+  },
+  {
+    id: "schizophrenia-recovery",
+    condition: "schizophrenia",
+    category: "Social Support",
+    title: "Support recovery through community inclusion",
+    summary:
+      "Recovery outcomes improve with non-stigmatizing support, continuity of treatment, and social inclusion.",
+    actions: [
+      "Encourage supported employment and community participation.",
+      "Use respectful language and avoid labels.",
+      "Coordinate with clinical teams and family supports.",
+    ],
+    sourceName: "WHO Schizophrenia Fact Sheet",
+    sourceUrl: "https://www.who.int/news-room/fact-sheets/detail/schizophrenia",
+  },
+  {
+    id: "ocd-guidance",
+    condition: "ocd",
+    category: "Communication",
+    title: "Validate OCD symptoms without minimizing distress",
+    summary:
+      "OCD is often misunderstood; validation and structured care reduce shame and treatment delay.",
+    actions: [
+      "Avoid jokes that trivialize compulsions.",
+      "Support referral for ERP-informed therapy.",
+      "Use non-judgmental, practical language around rituals and triggers.",
+    ],
+    sourceName: "International OCD Foundation",
+    sourceUrl: "https://iocdf.org/about-ocd/",
+  },
+  {
+    id: "adhd-support",
+    condition: "adhd",
+    category: "Social Support",
+    title: "Use strengths-based support for ADHD",
+    summary:
+      "Practical structure and strengths-based coaching improve outcomes and reduce stigma in ADHD.",
+    actions: [
+      "Use visual reminders and short task blocks.",
+      "Encourage strengths-based routines rather than blame.",
+      "Seek formal assessment when symptoms impair work or school.",
+    ],
+    sourceName: "CDC ADHD",
+    sourceUrl: "https://www.cdc.gov/adhd/",
+  },
+  {
+    id: "substance-use-reduction",
+    condition: "substance-use",
+    category: "Clinical Care",
+    title: "Use harm-reduction and treatment pathways without stigma",
+    summary:
+      "People with substance-use disorders benefit from compassionate care and evidence-based treatment plans.",
+    actions: [
+      "Prioritize safety and overdose prevention education.",
+      "Use referral pathways to treatment and counseling services.",
+      "Avoid moralizing language that reduces care-seeking.",
+    ],
+    sourceName: "SAMHSA",
+    sourceUrl: "https://www.samhsa.gov/find-help/disorders",
+  },
+  {
+    id: "eating-disorders-support",
+    condition: "eating-disorders",
+    category: "Health Rights",
+    title: "Promote body-neutral, non-judgmental support",
+    summary:
+      "Early intervention and non-stigmatizing communication improve outcomes in eating disorders.",
+    actions: [
+      "Avoid appearance-focused comments.",
+      "Encourage early specialist assessment.",
+      "Support coordinated medical and psychological care.",
+    ],
+    sourceName: "NEDA",
+    sourceUrl: "https://www.nationaleatingdisorders.org/",
+  },
 ];
  
 const stigmaFacts = [
@@ -359,7 +545,14 @@ const stigmaFacts = [
   }
 ];
 
-const categoryFilters = ["All", "Communication", "Health Rights", "Social Support", "Prevention"];
+const categoryFilters = [
+  "All",
+  "Communication",
+  "Health Rights",
+  "Social Support",
+  "Prevention",
+  "Clinical Care",
+];
 
 function StigmaSupportPage({ session }) {
   const user = session?.user ?? null;
@@ -455,11 +648,17 @@ function StigmaSupportPage({ session }) {
 
   if (!user) return <Navigate replace to="/login" />;
 
+  const normalizedQuery = query.toLowerCase().trim();
+
   const filteredResources = supportResources.filter((item) => {
-    const diseaseMatch = item.condition === activeDisease;
+    const diseaseMatch = normalizedQuery ? true : item.condition === activeDisease;
     const categoryMatch = activeCategory === "All" || item.category === activeCategory;
     const content = `${item.title} ${item.summary} ${item.actions.join(" ")} ${item.category}`.toLowerCase();
-    const queryMatch = query.trim() === "" || content.includes(query.toLowerCase().trim());
+    const queryMatch =
+      normalizedQuery === "" ||
+      content.includes(normalizedQuery) ||
+      item.condition.includes(normalizedQuery) ||
+      item.sourceName.toLowerCase().includes(normalizedQuery);
     return diseaseMatch && categoryMatch && queryMatch;
   });
 
