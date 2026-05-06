@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import { supabase } from "../lib/supabase";
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie } from 'recharts';
@@ -28,6 +28,7 @@ const PRESET_GOALS = [
 ];
 
 function DashboardPage({ session }) {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [moodTrend, setMoodTrend] = useState([]);
   const [chartType, setChartType] = useState('bar');
@@ -43,6 +44,7 @@ function DashboardPage({ session }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [goalToDelete, setGoalToDelete] = useState(null);
   const [feedback, setFeedback] = useState("");
+  const [recentConversations, setRecentConversations] = useState([]);
 
   const user = session?.user ?? null;
   const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Friend";
@@ -70,7 +72,7 @@ function DashboardPage({ session }) {
           .order("created_at", { ascending: false }),
         supabase
           .from("chat_sessions")
-          .select("id")
+          .select("id, session_title, created_at")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false }),
         supabase
@@ -102,6 +104,7 @@ function DashboardPage({ session }) {
 
       setMoodTrend(trend);
       setWellnessGoals(goalRows);
+      setRecentConversations(sessionRows.slice(0, 3));
       setStats({
         streakDays: trend.length,
         reflectionsCount: journalRows.length,
@@ -222,11 +225,11 @@ function DashboardPage({ session }) {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="pt-28 pb-16 px-6">
+      <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto space-y-6">
-          <section className="bg-gradient-to-r from-primary to-primary-container rounded-[28px] p-8 text-white shadow-2xl">
+          <section className="bg-gradient-to-r from-primary to-primary-container rounded-[28px] p-6 sm:p-8 text-white shadow-2xl">
             <p className="text-primary-fixed text-sm tracking-wide uppercase mb-2">GraceAI Dashboard</p>
-            <h1 className="font-h1 text-[38px] leading-tight mb-3">
+            <h1 className="font-h1 text-[30px] sm:text-[38px] leading-tight mb-3">
               Welcome back, {displayName}. Your wellness progress overview.
             </h1>
             <p className="text-primary-fixed max-w-3xl">
@@ -262,8 +265,44 @@ function DashboardPage({ session }) {
             </article>
           </section>
 
+          <section className="bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h2 className="font-h3 text-h3 text-primary">Recent Conversations</h2>
+              <button
+                className="text-sm font-semibold text-primary hover:underline"
+                type="button"
+                onClick={() => navigate("/dashboard/ai-support-chat")}
+              >
+                View all
+              </button>
+            </div>
+            {recentConversations.length === 0 ? (
+              <p className="text-sm text-on-surface-variant">No conversations yet. Start your first chat now.</p>
+            ) : (
+              <div className="grid gap-3">
+                {recentConversations.map((conversation) => (
+                  <button
+                    key={conversation.id}
+                    type="button"
+                    onClick={() =>
+                      navigate(`/dashboard/ai-support-chat?sessionId=${encodeURIComponent(conversation.id)}`)
+                    }
+                    className="text-left p-4 rounded-2xl border border-slate-200 hover:border-primary/30 hover:bg-primary/5 transition-all"
+                  >
+                    <p className="font-semibold text-primary truncate">
+                      {conversation.session_title || "Untitled conversation"}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {new Date(conversation.created_at).toLocaleString()}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
           <section className="grid lg:grid-cols-3 gap-6">
-            <article className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm h-[380px] flex flex-col">
+            <article className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm h-[380px] flex flex-col">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-4">
                 <h2 className="font-h3 text-h3 text-primary flex items-center gap-2">
                    Mood Trend (Last 7 Days)
@@ -271,24 +310,24 @@ function DashboardPage({ session }) {
                 </h2>
                 
                 {/* Chart Type Toggle */}
-                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
+                <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
                   <button 
                      onClick={() => setChartType('bar')} 
-                     className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'bar' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'bar' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                      <span className="material-symbols-outlined text-[18px]">bar_chart</span>
                      Bar
                   </button>
                   <button 
                      onClick={() => setChartType('line')} 
-                     className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'line' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'line' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                      <span className="material-symbols-outlined text-[18px]">show_chart</span>
                      Line
                   </button>
                   <button 
                      onClick={() => setChartType('pie')} 
-                     className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'pie' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'pie' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                      <span className="material-symbols-outlined text-[18px]">pie_chart</span>
                      Pie
@@ -340,7 +379,7 @@ function DashboardPage({ session }) {
                     </ResponsiveContainer>
                     )}
                     {chartType === 'pie' && (
-                      <div className="flex flex-row items-center justify-between gap-6 h-full w-full">
+                      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 h-full w-full">
                         {/* Pie Chart Side */}
                         <div className="flex-grow h-full min-w-0">
                           <ResponsiveContainer width="100%" height="100%">
@@ -365,7 +404,7 @@ function DashboardPage({ session }) {
                         </div>
                         
                         {/* Legend Side */}
-                        <div className="flex flex-col justify-center gap-3 w-44 shrink-0 border-l border-slate-100 pl-6">
+                        <div className="flex flex-row md:flex-col flex-wrap md:flex-nowrap justify-center gap-3 w-full md:w-44 shrink-0 md:border-l border-slate-100 md:pl-6 pt-2 md:pt-0">
                           {pieData.map((item, idx) => (
                             <div key={idx} className="flex items-center gap-3">
                               <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl shadow-sm border border-slate-100" style={{ backgroundColor: `${item.fill}20` }}>

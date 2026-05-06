@@ -13,7 +13,7 @@ function AuthRoute({ children, mode, session }) {
   }
 
   if (mode === "guest" && isAuthenticated) {
-    return <Navigate replace to="/dashboard" />;
+    return <Navigate replace to="/dashboard/ai-support-chat" />;
   }
 
   return children;

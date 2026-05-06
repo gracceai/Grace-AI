@@ -14,19 +14,19 @@ function SiteFooter() {
         <div className="flex flex-wrap md:justify-end gap-x-xl gap-y-md">
           <a
             className="font-plus-jakarta text-sm font-semibold text-slate-500 hover:text-purple-700 transition-colors cursor-pointer"
-            href="/#resources"
+            href="/privacy-policy"
           >
             Privacy Policy
           </a>
           <a
             className="font-plus-jakarta text-sm font-semibold text-slate-500 hover:text-purple-700 transition-colors cursor-pointer"
-            href="/#resources"
+            href="/terms-of-service"
           >
             Terms of Service
           </a>
           <a
             className="font-plus-jakarta text-sm font-semibold text-purple-900 transition-colors cursor-pointer"
-            href="tel:+264836796445"
+            href="/crisis-support"
           >
             Crisis Support
           </a>

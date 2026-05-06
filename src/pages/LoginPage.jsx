@@ -19,7 +19,7 @@ function LoginPage() {
       }
       const { data } = await supabase.auth.getSession();
       if (mounted && data.session?.user) {
-        navigate("/dashboard", { replace: true });
+        navigate("/dashboard/ai-support-chat", { replace: true });
       }
     };
 
@@ -56,7 +56,7 @@ function LoginPage() {
 
     setFeedback({ message: "Login successful. Redirecting...", type: "success" });
     setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/dashboard/ai-support-chat");
     }, 800);
     setLoading(false);
   };
@@ -117,6 +117,11 @@ function LoginPage() {
                   value={password}
                 />
               </label>
+              <div className="text-right -mt-2">
+                <Link className="text-sm font-semibold text-primary hover:underline" to="/forgot-password">
+                  Forgot password?
+                </Link>
+              </div>
 
               {feedback.message && (
                 <p

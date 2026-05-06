@@ -40,44 +40,44 @@ function LandingPage() {
     <>
       <SiteHeader />
 
-      <main className="pt-24">
+      <main className="pt-20 sm:pt-24">
         <section
-          className="relative min-h-[870px] flex items-center justify-center overflow-hidden hero-gradient"
+          className="relative min-h-[calc(100vh-5rem)] md:min-h-[870px] flex items-center justify-center overflow-hidden hero-gradient"
           id="home"
         >
-          <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 items-center gap-12 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 items-center gap-8 md:gap-12 relative z-10 py-10">
             <div className="space-y-lg">
-              <h1 className="font-h1 text-[48px] md:text-[64px] leading-[1.1] text-primary">
+              <h1 className="font-h1 text-[34px] sm:text-[42px] md:text-[64px] leading-[1.1] text-primary">
                 Empowering Mental Resilience for Every Namibian
               </h1>
               <p className="font-body-lg text-on-surface-variant max-w-lg">
                 GraceAI is your wise companion, providing steady, non-judgmental mental health
                 support through culturally-nuanced AI and secure digital tools.
               </p>
-              <div className="flex flex-wrap gap-md pt-4">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-md pt-4">
                 <button
-                  className="bg-primary text-on-primary font-bold px-8 py-4 rounded-xl shadow-xl flex items-center gap-2 active:scale-95 transition-all"
+                  className="w-full sm:w-auto bg-primary text-on-primary font-bold px-8 py-4 rounded-xl shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-all"
                   onClick={() => navigate("/signup")}
                 >
                   Start Your Journey
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
                 <button
-                  className="border-2 border-primary text-primary font-bold px-8 py-4 rounded-xl flex items-center gap-2 hover:bg-primary/5 active:scale-95 transition-all"
+                  className="w-full sm:w-auto border-2 border-primary text-primary font-bold px-8 py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-95 transition-all"
                   onClick={() => scrollToSection("features")}
                 >
                   View Features
                 </button>
               </div>
             </div>
-            <div className="hidden md:block relative">
+            <div className="relative w-full md:w-auto">
               <TypingChatCard />
             </div>
           </div>
         </section>
 
         <section className="py-xxl bg-surface-container-low" id="why-graceai">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-xl">
               <h2 className="font-h2 text-h2 text-primary mb-md">Bridging the Mental Health Gap</h2>
               <p className="font-body-md text-on-surface-variant max-w-2xl mx-auto">
@@ -109,7 +109,7 @@ function LandingPage() {
         </section>
 
         <section className="py-xxl bg-white" id="features">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex flex-col md:flex-row justify-between items-end mb-xl gap-md">
               <div className="max-w-xl">
                 <span className="text-primary font-bold tracking-widest text-xs uppercase mb-2 block">
@@ -172,7 +172,7 @@ function LandingPage() {
         </section>
 
         <section className="py-xxl bg-surface-container-highest/30 overflow-hidden" id="corporate">
-          <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-xxl items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-xxl items-center">
             <div className="order-2 md:order-1">
               <div className="relative">
                 <img
@@ -227,7 +227,7 @@ function LandingPage() {
         </section>
 
         <section className="py-xxl bg-tertiary text-on-tertiary" id="resources">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="max-w-3xl mx-auto text-center mb-xxl">
               <div className="inline-block p-4 bg-on-tertiary/10 rounded-full mb-md">
                 <span
@@ -286,8 +286,8 @@ function LandingPage() {
 
         <section className="py-xxl relative overflow-hidden">
           <div className="absolute inset-0 bg-primary opacity-5" />
-          <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-            <h2 className="font-h1 text-[40px] md:text-[52px] leading-tight text-primary mb-lg">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <h2 className="font-h1 text-[32px] sm:text-[40px] md:text-[52px] leading-tight text-primary mb-lg">
               Take the First Step Toward a Calmer Mind
             </h2>
             <p className="font-body-lg text-on-surface-variant mb-xl">

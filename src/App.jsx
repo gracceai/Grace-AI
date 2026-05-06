@@ -12,6 +12,11 @@ import StigmaSupportPage from "./pages/StigmaSupportPage";
 import JournalPage from "./pages/JournalPage";
 import ViewJournalEntryPage from "./pages/ViewJournalEntryPage";
 import CustomCursor from "./components/CustomCursor";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+import CrisisSupportPage from "./pages/CrisisSupportPage";
 
 function App() {
   const [session, setSession] = useState(null);
@@ -62,6 +67,18 @@ function App() {
         }
         path="/login"
       />
+      <Route
+        element={
+          <AuthRoute mode="guest" session={session}>
+            <ForgotPasswordPage />
+          </AuthRoute>
+        }
+        path="/forgot-password"
+      />
+      <Route element={<ResetPasswordPage session={session} />} path="/reset-password" />
+      <Route element={<PrivacyPolicyPage />} path="/privacy-policy" />
+      <Route element={<TermsOfServicePage />} path="/terms-of-service" />
+      <Route element={<CrisisSupportPage />} path="/crisis-support" />
       <Route
         element={
           <AuthRoute mode="guest" session={session}>

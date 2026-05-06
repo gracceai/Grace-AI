@@ -10,7 +10,6 @@ const navItems = [
 ];
 
 const dashboardNavItems = [
-  { path: "/", label: "Home" },
   { path: "/dashboard", label: "Dashboard" },
   { path: "/dashboard/stigma-support", label: "Stigma-Sensitive Health Support" },
   { path: "/dashboard/quick-mood-checkin", label: "Quick Mood Check-in" },
@@ -27,6 +26,7 @@ function SiteHeader() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState("light");
   const isLandingPage = location.pathname === "/";
   const activeSection = location.hash ? location.hash.replace("#", "") : "features";
 
@@ -67,9 +67,25 @@ function SiteHeader() {
   }, []);
 
   useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    const preferredDark =
+      window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const nextTheme = storedTheme === "dark" || (!storedTheme && preferredDark) ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+    setTheme(nextTheme);
+  }, []);
+
+  useEffect(() => {
     setIsProfileMenuOpen(false);
     setIsMobileMenuOpen(false);
   }, [location.pathname, location.hash]);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+  };
 
   const scrollToSection = (sectionId) => {
     if (!isLandingPage) {
@@ -97,11 +113,11 @@ function SiteHeader() {
   return (
     <>
       <header className="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
-      <div className="flex items-center justify-between px-6 py-3 md:py-4 max-w-7xl mx-auto gap-4">
-        <button className="flex items-center gap-2 shrink-0" onClick={() => navigate(currentUser ? "/dashboard" : "/")} type="button">
+      <div className="flex items-center justify-between pl-2 pr-4 sm:pr-6 py-3 md:py-4 gap-3 md:gap-4">
+        <button className="flex items-center gap-2 shrink-0" onClick={() => navigate(currentUser ? "/dashboard/ai-support-chat" : "/")} type="button">
           <img
             alt="GraceAI Logo"
-            className="h-14 md:h-16 lg:h-20 w-auto object-contain drop-shadow-[0_2px_4px_rgba(49,11,99,0.18)]"
+            className="h-9 sm:h-11 md:h-14 lg:h-[4.5rem] w-auto object-contain drop-shadow-[0_2px_4px_rgba(49,11,99,0.18)]"
             src="/logo.png"
           />
         </button>
@@ -144,6 +160,16 @@ function SiteHeader() {
         )}
 
         <div className="flex items-center gap-sm md:gap-md shrink-0">
+          <button
+            className="rounded-full p-2 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[24px]">
+              {theme === "dark" ? "light_mode" : "dark_mode"}
+            </span>
+          </button>
           {currentUser ? (
             <div className="relative flex items-center gap-2">
               <button
@@ -174,14 +200,14 @@ function SiteHeader() {
           ) : (
             <>
               <button
-                className="text-slate-600 font-medium text-sm px-4 py-2 cursor-pointer active:scale-95 transform duration-150"
+                className="hidden sm:inline-flex text-slate-600 font-medium text-sm px-4 py-2 cursor-pointer active:scale-95 transform duration-150"
                 onClick={() => navigate("/login")}
                 type="button"
               >
                 Login
               </button>
               <button
-                className="bg-primary text-on-primary font-bold text-sm px-6 py-2.5 rounded-full shadow-lg hover:bg-primary-container transition-all active:scale-95 transform duration-150"
+                className="hidden sm:inline-flex bg-primary text-on-primary font-bold text-sm px-6 py-2.5 rounded-full shadow-lg hover:bg-primary-container transition-all active:scale-95 transform duration-150"
                 onClick={() => navigate("/signup")}
                 type="button"
               >
@@ -213,7 +239,7 @@ function SiteHeader() {
           ></div>
 
           {/* Drawer Panel */}
-          <div className="fixed inset-y-0 right-0 w-64 bg-white dark:bg-slate-900 shadow-2xl flex flex-col transition-transform transform">
+          <div className="fixed inset-y-0 right-0 w-full max-w-64 bg-white dark:bg-slate-900 shadow-2xl flex flex-col transition-transform transform">
             <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
               <span className="font-bold text-lg text-primary">Menu</span>
               <button
@@ -227,6 +253,26 @@ function SiteHeader() {
             <div className="flex flex-col p-4 overflow-y-auto gap-2">
               {!currentUser && (
                 <>
+                  <button
+                    className="text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all text-slate-700 hover:bg-slate-50"
+                    onClick={() => {
+                      navigate("/login");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    type="button"
+                  >
+                    Login
+                  </button>
+                  <button
+                    className="text-left font-plus-jakarta text-sm font-semibold px-4 py-3 rounded-lg transition-all text-white bg-primary hover:bg-primary/90"
+                    onClick={() => {
+                      navigate("/signup");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    type="button"
+                  >
+                    Get Started
+                  </button>
                   {navItems.map((item) => (
                     <button
                       key={item.id}
@@ -265,6 +311,16 @@ function SiteHeader() {
                       {item.label}
                     </button>
                   ))}
+                  <button
+                    className="text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all text-slate-700 hover:bg-slate-50"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    type="button"
+                  >
+                    Sign out
+                  </button>
                 </>
               )}
             </div>

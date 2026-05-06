@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
+import { supabase } from "../lib/supabase";
 
 const diseaseTabs = [
   {
@@ -367,6 +368,9 @@ function StigmaSupportPage({ session }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [interestInput, setInterestInput] = useState("");
+  const [profileFeedback, setProfileFeedback] = useState("");
+  const [matchingPeers, setMatchingPeers] = useState([]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -374,6 +378,80 @@ function StigmaSupportPage({ session }) {
     }, 6000);
     return () => clearInterval(timer);
   }, []);
+
+  const normalizeInterests = (value) =>
+    value
+      .split(",")
+      .map((item) => item.trim().toLowerCase())
+      .filter(Boolean);
+
+  const loadSocialSupportMatches = async () => {
+    if (!supabase || !user || activeCategory !== "Social Support") {
+      setMatchingPeers([]);
+      return;
+    }
+
+    const { data: selfProfile, error: selfProfileError } = await supabase
+      .from("support_profiles")
+      .select("interests")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (selfProfileError) {
+      setProfileFeedback("Enable support profile SQL/RLS setup to use social matching.");
+      setMatchingPeers([]);
+      return;
+    }
+
+    const myInterests = selfProfile?.interests ?? [];
+    setInterestInput(myInterests.join(", "));
+
+    const { data: peerRows, error: peersError } = await supabase
+      .from("support_profiles")
+      .select("user_id, display_name, interests, condition_focus")
+      .eq("open_to_match", true)
+      .contains("condition_focus", [activeDisease])
+      .neq("user_id", user.id);
+    if (peersError) {
+      setProfileFeedback("Enable support profile SQL/RLS setup to use social matching.");
+      setMatchingPeers([]);
+      return;
+    }
+
+    const peers = (peerRows ?? [])
+      .map((peer) => {
+        const overlap = (peer.interests ?? []).filter((interest) => myInterests.includes(interest));
+        return { ...peer, overlap };
+      })
+      .filter((peer) => peer.overlap.length > 0)
+      .sort((a, b) => b.overlap.length - a.overlap.length);
+
+    setMatchingPeers(peers);
+  };
+
+  useEffect(() => {
+    loadSocialSupportMatches();
+  }, [activeCategory, activeDisease, user?.id]);
+
+  const saveInterestProfile = async () => {
+    if (!supabase || !user) return;
+    const interests = normalizeInterests(interestInput);
+    const { error } = await supabase.from("support_profiles").upsert(
+      {
+        user_id: user.id,
+        display_name: user.user_metadata?.full_name || user.email || "Anonymous",
+        interests,
+        condition_focus: [activeDisease],
+        open_to_match: true,
+      },
+      { onConflict: "user_id" }
+    );
+    if (error) {
+      setProfileFeedback("Could not save interests yet. Check support profile permissions.");
+      return;
+    }
+    setProfileFeedback("Your social support profile was updated.");
+    loadSocialSupportMatches();
+  };
 
   if (!user) return <Navigate replace to="/login" />;
 
@@ -504,6 +582,47 @@ function StigmaSupportPage({ session }) {
           </div>
 
           <div className="space-y-4">
+            {activeCategory === "Social Support" && (
+              <article className="rounded-2xl border border-primary/20 p-4 bg-primary/5">
+                <h3 className="font-semibold text-primary mb-2">Match With People With Similar Interests</h3>
+                <p className="text-sm text-on-surface-variant mb-3">
+                  Add your interests to discover people in the same support area with common interests.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 mb-2">
+                  <input
+                    className="flex-1 rounded-xl border border-slate-300"
+                    value={interestInput}
+                    onChange={(event) => setInterestInput(event.target.value)}
+                    placeholder="e.g. football, music, prayer groups"
+                  />
+                  <button
+                    className="px-4 py-2 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors"
+                    type="button"
+                    onClick={saveInterestProfile}
+                  >
+                    Save interests
+                  </button>
+                </div>
+                {profileFeedback ? <p className="text-xs text-primary mb-3">{profileFeedback}</p> : null}
+
+                {matchingPeers.length === 0 ? (
+                  <p className="text-sm text-on-surface-variant">
+                    No matches yet. Update your interests and check again later.
+                  </p>
+                ) : (
+                  <div className="grid gap-2">
+                    {matchingPeers.map((peer) => (
+                      <div key={peer.user_id} className="rounded-xl border border-slate-200 bg-white p-3">
+                        <p className="font-semibold text-primary">{peer.display_name || "Community Member"}</p>
+                        <p className="text-xs text-slate-500">
+                          Shared interests: {peer.overlap.join(", ")}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </article>
+            )}
             {filteredResources.length === 0 ? (
               <div className="rounded-2xl border border-slate-100 p-12 bg-slate-50 text-center">
                 <p className="text-sm text-on-surface-variant italic">

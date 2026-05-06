@@ -195,6 +195,13 @@ function AISupportChatPage({ session }) {
   }, [user]);
 
   useEffect(() => {
+    const sessionIdFromQuery = searchParams.get("sessionId");
+    if (sessionIdFromQuery) {
+      setSelectedSessionId(sessionIdFromQuery);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     if (selectedSessionId) loadMessages(selectedSessionId);
   }, [selectedSessionId]);
 
@@ -274,6 +281,8 @@ function AISupportChatPage({ session }) {
         setChatMessages([]);
       }
       loadSessions();
+    } else {
+      setFeedback(error.message || "Could not delete session.");
     }
   };
 
@@ -291,6 +300,8 @@ function AISupportChatPage({ session }) {
     if (!error) {
       setFeedback("Chat renamed.");
       loadSessions();
+    } else {
+      setFeedback(error.message || "Could not rename session.");
     }
     setEditingSessionId(null);
   };
@@ -557,35 +568,46 @@ function AISupportChatPage({ session }) {
   };
 
   const saveEditedMessage = async () => {
-    if (!supabase || !editingMessageId || !selectedSessionId || !editingMessageValue.trim()) return;
-    
-    const oldMsg = chatMessages.find(m => m.id === editingMessageId);
-    if (!oldMsg) return;
+    if (!editingMessageId || !editingMessageValue.trim()) return;
 
-    const { data: newUserMsg, error } = await supabase
-      .from("chat_messages")
-      .insert({
-         session_id: selectedSessionId,
-         sender: "user",
-         message: editingMessageValue.trim(),
-         parent_id: oldMsg.parent_id
-      })
-      .select().single();
-      
-    if (!error && newUserMsg) {
-       setActiveBranchSelections(prev => ({
-          ...prev,
-          [oldMsg.parent_id || 'root']: newUserMsg.id
-       }));
-       
-       setEditingMessageId(null);
-       setEditingMessageValue("");
-       
-       await streamAssistantResponse(newUserMsg.id, newUserMsg.message, [], selectedSessionId);
+    if (!user) {
+      setChatMessages((prev) =>
+        prev.map((message) =>
+          message.id === editingMessageId ? { ...message, message: editingMessageValue.trim() } : message
+        )
+      );
+      setEditingMessageId(null);
+      setEditingMessageValue("");
+      setFeedback("Message updated.");
+      return;
     }
+
+    if (!supabase || !selectedSessionId) return;
+    const { error } = await supabase
+      .from("chat_messages")
+      .update({ message: editingMessageValue.trim() })
+      .eq("id", editingMessageId)
+      .eq("session_id", selectedSessionId)
+      .eq("sender", "user");
+
+    if (error) {
+      setFeedback(error.message || "Could not edit this message.");
+      return;
+    }
+
+    setEditingMessageId(null);
+    setEditingMessageValue("");
+    setFeedback("Message updated.");
+    loadMessages(selectedSessionId);
   };
 
   const deleteMessage = async (messageId) => {
+    if (!user) {
+      setChatMessages((prev) => prev.filter((message) => message.id !== messageId));
+      setFeedback("Message deleted.");
+      return;
+    }
+
     if (!supabase || !selectedSessionId) return;
     const { error } = await supabase
       .from("chat_messages")
@@ -596,11 +618,13 @@ function AISupportChatPage({ session }) {
     if (!error) {
       setFeedback("Message deleted.");
       loadMessages(selectedSessionId);
+    } else {
+      setFeedback(error.message || "Could not delete this message.");
     }
   };
 
   const renderInputBar = () => (
-    <div className="w-full relative bg-[#f4f4f5] dark:bg-slate-800 rounded-[28px] focus-within:bg-white focus-within:shadow-md focus-within:ring-1 focus-within:ring-slate-200 transition-all border border-transparent focus-within:border-slate-200 flex flex-col p-1.5 px-2">
+    <div className="w-full relative bg-[#f4f4f5] dark:bg-slate-800 rounded-[28px] focus-within:bg-white transition-all border border-transparent flex flex-col p-1.5 px-2">
       
       {selectedFiles.length > 0 && (
          <div className="px-3 pt-2 pb-1 flex flex-wrap gap-2 items-center animate-in fade-in slide-in-from-bottom-2">
@@ -693,7 +717,7 @@ function AISupportChatPage({ session }) {
             }
           }}
           placeholder="Ask anything"
-          className="flex-1 bg-transparent outline-none text-slate-800 placeholder:text-slate-500 py-3 resize-none max-h-60 overflow-y-auto text-[15px] leading-relaxed"
+          className="flex-1 bg-transparent border-0 focus:border-0 focus:ring-0 outline-none text-slate-800 placeholder:text-slate-500 py-3 resize-none max-h-60 overflow-y-auto text-[15px] leading-relaxed"
         />
         
         <div className="flex items-center gap-1.5 shrink-0 pr-1">
@@ -810,6 +834,7 @@ function AISupportChatPage({ session }) {
                     <span className="truncate text-sm font-medium pr-2 flex-1">{item.session_title}</span>
                     <div className="opacity-0 group-hover:opacity-100 flex items-center shrink-0">
                       <button 
+                        type="button"
                         onClick={(e) => { 
                           e.stopPropagation(); 
                           setEditingSessionId(item.id); 
@@ -821,6 +846,7 @@ function AISupportChatPage({ session }) {
                         <span className="material-symbols-outlined text-[16px]">edit</span>
                       </button>
                       <button 
+                        type="button"
                         onClick={(e) => { 
                           e.stopPropagation(); 
                           handleDeleteSession(item.id); 
@@ -937,10 +963,10 @@ function AISupportChatPage({ session }) {
                         </div>
                       )}
 
-                      <div className={`max-w-[85%] flex flex-col relative ${message.sender === "user" ? "items-end" : "items-start w-full"}`}>
+                      <div className={`w-full max-w-full md:max-w-[85%] flex flex-col relative ${message.sender === "user" ? "items-end" : "items-start"}`}>
                         
                         {editingMessageId === message.id ? (
-                           <div className="w-full min-w-[300px] space-y-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                           <div className="w-full min-w-0 space-y-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                              <textarea className="w-full rounded-xl border border-slate-200 p-3 text-slate-800 outline-none focus:ring-2 focus:ring-primary/20 bg-slate-50" onChange={(event) => setEditingMessageValue(event.target.value)} value={editingMessageValue} rows="3" />
                              <div className="flex gap-2 justify-end">
                                <button className="px-4 py-2 rounded-lg bg-white text-slate-600 font-bold text-xs hover:bg-slate-50 transition-all border border-slate-200" onClick={() => setEditingMessageId(null)}>Cancel</button>
@@ -968,7 +994,7 @@ function AISupportChatPage({ session }) {
                              )}
 
                              {message.message && message.message.trim() && (
-                               <div className={`p-3.5 px-4 text-[15px] leading-relaxed relative group ${message.sender === "user" ? "bg-[#f4f4f5] text-slate-900 rounded-3xl rounded-br-sm" : "bg-transparent text-slate-800 w-full"}`}>
+                               <div className={`p-3.5 px-4 text-[15px] leading-relaxed relative group max-w-full ${message.sender === "user" ? "bg-[#f4f4f5] text-slate-900 rounded-3xl rounded-br-sm" : "bg-transparent text-slate-800 w-full"}`}>
                                  
                                  {message.sender === "assistant" ? (
                                    <div className="w-full break-words text-slate-800">
@@ -1032,14 +1058,14 @@ function AISupportChatPage({ session }) {
                                      )}
                                    </div>
                                  ) : (
-                                   <p className="whitespace-pre-wrap">{message.message}</p>
+                                  <p className="whitespace-pre-wrap break-words">{message.message}</p>
                                  )}
                                  
                                  {message.sender === "user" && (
                                    <>
-                                     <div className="absolute top-1/2 -left-12 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1">
-                                       <button className="text-slate-400 hover:text-primary p-1 bg-white rounded-full shadow-sm border border-slate-100" onClick={() => { setEditingMessageId(message.id); setEditingMessageValue(message.message); }} title="Edit"><span className="material-symbols-outlined text-[14px]">edit</span></button>
-                                       <button className="text-slate-400 hover:text-red-500 p-1 bg-white rounded-full shadow-sm border border-slate-100" onClick={() => deleteMessage(message.id)} title="Delete"><span className="material-symbols-outlined text-[14px]">delete</span></button>
+                                    <div className="absolute top-1/2 -left-12 -translate-y-1/2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex flex-col gap-1">
+                                       <button type="button" className="text-slate-400 hover:text-primary p-1 bg-white rounded-full shadow-sm border border-slate-100" onClick={() => { setEditingMessageId(message.id); setEditingMessageValue(message.message); }} title="Edit"><span className="material-symbols-outlined text-[14px]">edit</span></button>
+                                       <button type="button" className="text-slate-400 hover:text-red-500 p-1 bg-white rounded-full shadow-sm border border-slate-100" onClick={() => deleteMessage(message.id)} title="Delete"><span className="material-symbols-outlined text-[14px]">delete</span></button>
                                      </div>
                                    </>
                                  )}

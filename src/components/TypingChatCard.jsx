@@ -55,7 +55,7 @@ function TypingChatCard() {
   const hasSenderBubble = senderTyping || senderTyped.length > 0;
 
   return (
-    <div className="bg-[#f6f7ef]/80 backdrop-blur-xl border border-white/70 p-8 md:p-10 rounded-[40px] shadow-2xl relative overflow-hidden max-w-[780px]">
+    <div className="bg-[#f6f7ef]/80 backdrop-blur-xl border border-white/70 p-4 sm:p-6 md:p-10 rounded-[28px] md:rounded-[40px] shadow-2xl relative overflow-hidden max-w-[780px] w-full">
       <div className="flex items-center gap-4 mb-xl">
         <div className="w-14 h-14 bg-white rounded-full overflow-hidden flex items-center justify-center border border-slate-100 shadow-sm">
           <img src="/GraceAI Companion Logo Icon.png" alt="GraceAI" className="w-full h-full object-cover" />
@@ -66,14 +66,14 @@ function TypingChatCard() {
         </div>
       </div>
 
-      <div className="space-y-md min-h-[220px]">
-        <div className="bg-[#c4cec0]/85 p-5 rounded-[22px] rounded-tl-sm max-w-[86%] text-body-lg text-[#2a4f4a] leading-relaxed">
+      <div className="space-y-md min-h-[180px] sm:min-h-[220px]">
+        <div className="bg-[#c4cec0]/85 p-4 sm:p-5 rounded-[22px] rounded-tl-sm max-w-[95%] sm:max-w-[86%] text-body-md sm:text-body-lg text-[#2a4f4a] leading-relaxed">
           {listenerTyped}
           {listenerTyping && <span className="chat-caret">▋</span>}
         </div>
 
         {hasSenderBubble && (
-          <div className="bg-primary text-white p-5 rounded-[22px] rounded-tr-sm max-w-[86%] ml-auto text-body-lg font-semibold leading-relaxed">
+          <div className="bg-primary text-white p-4 sm:p-5 rounded-[22px] rounded-tr-sm max-w-[95%] sm:max-w-[86%] ml-auto text-body-md sm:text-body-lg font-semibold leading-relaxed">
             {senderTyped}
             {senderTyping && <span className="chat-caret">▋</span>}
           </div>

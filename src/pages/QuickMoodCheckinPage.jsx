@@ -148,7 +148,7 @@ function QuickMoodCheckinPage({ session }) {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="pt-28 pb-16 px-6">
+      <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto space-y-6">
           <section className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm">
             <h1 className="font-h2 text-h2 text-primary mb-8 flex items-center gap-2">
@@ -228,11 +228,11 @@ function QuickMoodCheckinPage({ session }) {
 
           <section className="grid lg:grid-cols-5 gap-6">
             {/* Mood Trend - Takes up 2 columns */}
-            <article className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm h-[380px] flex flex-col">
-              <div className="flex items-center justify-between mb-6">
+            <article className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm h-[380px] flex flex-col">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
                 <h2 className="font-bold text-slate-800">Weekly Pattern</h2>
                 {/* Chart Type Toggle */}
-                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
+                <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
                   <button 
                     onClick={() => setChartType('bar')} 
                     className={`p-1.5 rounded-lg text-sm transition-all flex items-center gap-1 ${chartType === 'bar' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
