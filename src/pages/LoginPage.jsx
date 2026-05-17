@@ -43,13 +43,23 @@ function LoginPage() {
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setFeedback({ message: error.message, type: "error" });
+      if (error) {
+        setFeedback({ message: error.message, type: "error" });
+        setLoading(false);
+        return;
+      }
+    } catch (requestError) {
+      setFeedback({
+        message:
+          "Could not reach Supabase. Check that VITE_SUPABASE_URL points to a live project (https://YOUR-REF.supabase.co), then rebuild and redeploy.",
+        type: "error",
+      });
       setLoading(false);
       return;
     }

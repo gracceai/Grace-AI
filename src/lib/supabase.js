@@ -5,7 +5,11 @@ const normalizeSupabaseUrl = (url) =>
 
 const rawSupabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
 const supabaseUrl = rawSupabaseUrl ? normalizeSupabaseUrl(rawSupabaseUrl) : "";
-const supabaseKey = (import.meta.env.VITE_SUPABASE_KEY ?? "").trim();
+const supabaseKey = (
+  import.meta.env.VITE_SUPABASE_KEY ??
+  import.meta.env.VITE_SUPABASE_ANON_KEY ??
+  ""
+).trim();
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseKey);
 
