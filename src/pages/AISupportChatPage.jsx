@@ -624,7 +624,7 @@ function AISupportChatPage({ session }) {
   };
 
   const renderInputBar = () => (
-    <div className="w-full relative bg-[#f4f4f5] dark:bg-slate-800 rounded-[28px] focus-within:bg-white transition-all border border-transparent flex flex-col p-1.5 px-2">
+    <div className="w-full min-w-0 relative bg-[#f4f4f5] dark:bg-slate-800 rounded-[28px] focus-within:bg-white transition-all border border-transparent flex flex-col p-1.5 px-2">
       
       {selectedFiles.length > 0 && (
          <div className="px-3 pt-2 pb-1 flex flex-wrap gap-2 items-center animate-in fade-in slide-in-from-bottom-2">
@@ -646,7 +646,7 @@ function AISupportChatPage({ session }) {
          </div>
       )}
 
-      <div className="flex items-center gap-3 pl-2">
+      <div className="flex items-end gap-1 sm:gap-2 min-w-0 w-full pl-1 sm:pl-2">
         <div className="relative">
           <button 
             type="button" 
@@ -655,7 +655,7 @@ function AISupportChatPage({ session }) {
             className={`text-slate-500 hover:text-slate-700 transition-colors flex items-center justify-center shrink-0 cursor-pointer ${selectedFiles.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`} 
             title={selectedFiles.length >= 5 ? "Maximum 5 files reached" : "Add Attachment"}
           >
-            <span className="material-symbols-outlined text-[28px] font-light">add</span>
+            <span className="material-symbols-outlined text-[24px] sm:text-[28px] font-light">add</span>
           </button>
           
           {showUploadMenu && selectedFiles.length < 5 && (
@@ -717,7 +717,7 @@ function AISupportChatPage({ session }) {
             }
           }}
           placeholder="Ask anything"
-          className="flex-1 bg-transparent border-0 focus:border-0 focus:ring-0 outline-none text-slate-800 placeholder:text-slate-500 py-3 resize-none max-h-60 overflow-y-auto text-[15px] leading-relaxed"
+          className="flex-1 min-w-0 bg-transparent border-0 focus:border-0 focus:ring-0 outline-none text-slate-800 placeholder:text-slate-500 py-2.5 sm:py-3 resize-none max-h-60 overflow-y-auto text-sm sm:text-[15px] leading-relaxed"
         />
         
         <div className="flex items-center gap-1.5 shrink-0 pr-1">
@@ -750,7 +750,7 @@ function AISupportChatPage({ session }) {
   );
 
   return (
-    <div className="min-h-screen bg-white flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-white flex flex-col overflow-hidden w-full max-w-[100vw]">
       <SiteHeader />
       
       {/* Toast Feedback */}
@@ -760,7 +760,7 @@ function AISupportChatPage({ session }) {
         </div>
       )}
 
-      <main className="flex-1 flex overflow-hidden pt-28">
+      <main className="flex-1 flex overflow-hidden pt-20 sm:pt-24 md:pt-28 min-w-0">
         
         {/* Left Sidebar */}
         <div className="hidden md:flex w-[260px] flex-col bg-[#f9f9f9] border-r border-slate-200 shrink-0">
@@ -872,8 +872,8 @@ function AISupportChatPage({ session }) {
         <div className="flex-1 flex flex-col relative h-full">
           
           {/* Mobile Header */}
-          <div className="md:hidden flex items-center justify-between p-4 border-b border-slate-100 bg-white z-10 shrink-0">
-             <select className="bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 max-w-[200px]" onChange={(e) => setSelectedSessionId(e.target.value)} value={selectedSessionId || ""}>
+          <div className="md:hidden flex items-center justify-between gap-2 px-3 py-3 border-b border-slate-100 bg-white z-10 shrink-0 min-w-0">
+             <select className="flex-1 min-w-0 bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 truncate" onChange={(e) => setSelectedSessionId(e.target.value)} value={selectedSessionId || ""}>
                 {chatSessions.map(item => (
                    <option key={item.id} value={item.id}>{item.session_title}</option>
                 ))}
@@ -883,7 +883,7 @@ function AISupportChatPage({ session }) {
 
           {activeThread.length === 0 ? (
             /* Empty State */
-            <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-3xl mx-auto w-full h-full overflow-y-auto">
+            <div className="flex-1 flex flex-col items-center justify-center px-3 sm:px-6 py-4 max-w-3xl mx-auto w-full min-w-0 h-full overflow-y-auto overflow-x-hidden">
               {!user && (
                 <div className="w-full mb-8">
                   <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -907,18 +907,20 @@ function AISupportChatPage({ session }) {
                   </div>
                 </div>
               )}
-              <h1 className="text-3xl font-semibold text-slate-800 mb-8">What can I help with?</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-slate-800 mb-6 sm:mb-8 text-center break-words w-full px-1">
+                What can I help with?
+              </h1>
               
-              <div className="w-full">
+              <div className="w-full min-w-0">
                 {renderInputBar()}
               </div>
 
-              <div className="flex flex-wrap gap-3 justify-center mt-6">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 justify-center mt-4 sm:mt-6 w-full">
                 {SUGGESTION_PILLS.map((pill, idx) => (
                   <button 
                     key={idx}
                     onClick={() => setChatInput(pill.label)}
-                    className={`px-5 py-2.5 rounded-full text-[15px] font-medium transition-opacity hover:opacity-80 ${pill.bg} ${pill.text}`}
+                    className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-[15px] font-medium transition-opacity hover:opacity-80 text-center ${pill.bg} ${pill.text}`}
                   >
                     {pill.label}
                   </button>
@@ -953,7 +955,7 @@ function AISupportChatPage({ session }) {
                     </div>
                   </div>
                 )}
-                <div className="max-w-3xl mx-auto w-full p-4 md:p-6 space-y-8">
+                <div className="max-w-3xl mx-auto w-full min-w-0 p-3 sm:p-4 md:p-6 space-y-6 sm:space-y-8">
                   {activeThread.map((message) => (
                     <div key={message.id} className={`flex gap-4 w-full group ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
                       
@@ -1093,8 +1095,8 @@ function AISupportChatPage({ session }) {
               </div>
 
               {/* Floating Input Area */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent pt-10 pb-6 px-4 shrink-0">
-                <div className="max-w-3xl mx-auto w-full">
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent pt-10 pb-4 sm:pb-6 px-3 sm:px-4 shrink-0 min-w-0">
+                <div className="max-w-3xl mx-auto w-full min-w-0">
                   {renderInputBar()}
                   <div className="text-center mt-2">
                      <p className="text-[11px] text-slate-400">GraceAI can make mistakes. Consider verifying important information.</p>

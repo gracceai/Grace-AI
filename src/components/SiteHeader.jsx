@@ -113,7 +113,7 @@ function SiteHeader() {
   return (
     <>
       <header className="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
-      <div className="flex items-center justify-between pl-2 pr-4 sm:pr-6 py-3 md:py-4 gap-3 md:gap-4">
+      <div className="flex items-center justify-between pl-2 pr-3 sm:pr-6 py-2.5 sm:py-3 md:py-4 gap-2 sm:gap-3 md:gap-4 max-w-[100vw]">
         <button className="flex items-center gap-2 shrink-0" onClick={() => navigate(currentUser ? "/dashboard/ai-support-chat" : "/")} type="button">
           <img
             alt="GraceAI Logo"
@@ -182,7 +182,7 @@ function SiteHeader() {
               </button>
 
               {isProfileMenuOpen && (
-                <div className="absolute right-0 mt-2 w-60 bg-white border border-slate-200 rounded-xl shadow-xl p-4">
+                <div className="hidden md:block absolute right-0 top-full mt-2 z-[60] w-60 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-4">
                   <p className="text-xs text-slate-500">Signed in as</p>
                   <p className="text-sm font-semibold text-primary truncate mb-3">
                     {currentUser.user_metadata?.full_name || currentUser.email || "GraceAI User"}

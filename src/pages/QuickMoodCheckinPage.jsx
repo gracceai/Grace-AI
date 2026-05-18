@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
+import MoodSelector from "../components/MoodSelector";
 import { supabase } from "../lib/supabase";
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie } from 'recharts';
 
@@ -150,39 +151,22 @@ function QuickMoodCheckinPage({ session }) {
       <SiteHeader />
       <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto space-y-6">
-          <section className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm">
-            <h1 className="font-h2 text-h2 text-primary mb-8 flex items-center gap-2">
-              <span className="text-3xl">🌈</span> Quick Mood Check-in
+          <section className="bg-white rounded-[32px] border border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm">
+            <h1 className="font-h2 text-xl sm:text-h2 text-primary mb-6 sm:mb-8 flex items-center gap-2">
+              <span className="text-2xl sm:text-3xl">🌈</span> Quick Mood Check-in
             </h1>
             
-            <form className="space-y-8" onSubmit={handleSubmit}>
-              <div className="space-y-6">
-                <label className="text-lg font-bold text-on-surface">How are you feeling right now?</label>
-                <div className="flex justify-between gap-2 max-w-xl">
-                  {[1, 2, 3, 4, 5].map((score) => (
-                    <button
-                      key={score}
-                      type="button"
-                      onClick={() => setForm(prev => ({ ...prev, moodScore: score }))}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-2xl transition-all duration-200 group cursor-pointer ${
-                        form.moodScore === score 
-                        ? 'bg-primary/10 scale-110 shadow-md ring-2 ring-primary' 
-                        : 'hover:bg-slate-50'
-                      }`}
-                    >
-                      <span className={`text-5xl transition-transform group-hover:scale-110 ${form.moodScore === score ? 'animate-bounce-subtle' : ''}`}>
-                        {MOOD_DATA[score].emoji}
-                      </span>
-                      <span className={`text-xs font-bold uppercase tracking-wider ${form.moodScore === score ? 'text-primary' : 'text-slate-400'}`}>
-                        {MOOD_DATA[score].label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+            <form className="space-y-6 sm:space-y-8" onSubmit={handleSubmit}>
+              <div className="space-y-4 sm:space-y-6">
+                <label className="text-base sm:text-lg font-bold text-on-surface">How are you feeling right now?</label>
+                <MoodSelector
+                  value={form.moodScore}
+                  onChange={(score) => setForm((prev) => ({ ...prev, moodScore: score }))}
+                />
               </div>
 
               {/* Dynamic Guidelines */}
-              <div className={`p-6 rounded-[24px] border-2 transition-all duration-500 shadow-sm ${
+              <div className={`p-4 sm:p-6 rounded-[24px] border-2 transition-all duration-500 shadow-sm ${
                 form.moodScore <= 2 ? 'bg-red-50 border-red-100' : 
                 form.moodScore === 3 ? 'bg-amber-50 border-amber-100' : 
                 'bg-emerald-50 border-emerald-100'
@@ -208,9 +192,9 @@ function QuickMoodCheckinPage({ session }) {
                 />
               </div>
 
-              <div className="flex items-center gap-6 pt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 pt-2">
                 <button 
-                  className="bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold hover:bg-primary/95 transition-all shadow-xl shadow-primary/20 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                  className="w-full sm:w-auto bg-primary text-on-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-2xl font-bold hover:bg-primary/95 transition-all shadow-xl shadow-primary/20 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
                   type="submit"
                   disabled={isSubmitting}
                 >
@@ -345,7 +329,7 @@ function QuickMoodCheckinPage({ session }) {
             </article>
 
             {/* Recent Reflections - Takes up 3 columns */}
-            <article className="lg:col-span-3 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm h-full">
+            <article className="lg:col-span-3 bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm h-full">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="font-h3 text-h3 text-primary">Your Recent Reflections</h2>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-slate-100 px-3 py-1 rounded-full">History</span>

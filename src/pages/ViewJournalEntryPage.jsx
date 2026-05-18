@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
+import MoodSelector from "../components/MoodSelector";
 import { supabase } from "../lib/supabase";
 import EmojiPicker from 'emoji-picker-react';
 
@@ -135,22 +136,15 @@ function ViewJournalEntryPage({ session }) {
                   />
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-6">
-                   <div className="flex gap-2">
-                     {[1,2,3,4,5].map(s => (
-                       <button 
-                        key={s}
-                        type="button"
-                        onClick={() => setForm({...form, moodScore: s})}
-                        className={`w-12 h-12 rounded-xl text-2xl flex items-center justify-center transition-all ${form.moodScore === s ? 'bg-primary/10 border-2 border-primary scale-110' : 'bg-slate-50 border-2 border-transparent opacity-50'}`}
-                       >
-                         {MOOD_DATA[s].emoji}
-                       </button>
-                     ))}
-                   </div>
-                   <div className="flex gap-3">
-                     <button type="button" onClick={() => setIsEditing(false)} className="px-6 py-3 rounded-2xl font-bold text-slate-500 hover:bg-slate-50">Cancel</button>
-                     <button type="submit" className="bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">Save Changes</button>
+                <div className="flex flex-col gap-6">
+                   <MoodSelector
+                     size="sm"
+                     value={form.moodScore}
+                     onChange={(score) => setForm({ ...form, moodScore: score })}
+                   />
+                   <div className="flex flex-col sm:flex-row gap-3">
+                     <button type="button" onClick={() => setIsEditing(false)} className="w-full sm:w-auto px-6 py-3 rounded-2xl font-bold text-slate-500 hover:bg-slate-50">Cancel</button>
+                     <button type="submit" className="w-full sm:w-auto bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">Save Changes</button>
                    </div>
                 </div>
               </form>

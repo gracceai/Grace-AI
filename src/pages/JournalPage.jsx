@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
+import MoodSelector from "../components/MoodSelector";
 import { supabase } from "../lib/supabase";
 import EmojiPicker from 'emoji-picker-react';
 
@@ -138,9 +139,9 @@ function JournalPage({ session }) {
   return (
     <div className="min-h-screen bg-background text-on-background">
       <SiteHeader />
-      <main className="pt-28 pb-16 px-6">
-        <div className="max-w-5xl mx-auto space-y-6">
-          <section className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm">
+      <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto space-y-6 w-full min-w-0">
+          <section className="bg-white rounded-[32px] border border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm">
             <h1 className="font-h2 text-h2 text-primary mb-6 flex items-center gap-2">
               <span className="text-3xl">📓</span> {editingId ? "Edit Journal Entry" : "Personal Journal"}
             </h1>
@@ -200,35 +201,19 @@ function JournalPage({ session }) {
 
               <div className="space-y-4">
                 <label className="text-sm font-semibold text-on-surface-variant ml-1">How's your mood for this entry?</label>
-                <div className="flex justify-between gap-2 max-w-lg">
-                  {[1, 2, 3, 4, 5].map((score) => (
-                    <button
-                      key={score}
-                      type="button"
-                      onClick={() => setForm(prev => ({ ...prev, moodScore: score }))}
-                      className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                        form.moodScore === score 
-                        ? 'bg-primary/5 border-primary scale-105' 
-                        : 'bg-white border-transparent hover:bg-slate-50'
-                      }`}
-                    >
-                      <span className={`text-3xl ${form.moodScore === score ? 'animate-bounce-subtle' : ''}`}>
-                        {MOOD_DATA[score].emoji}
-                      </span>
-                      <span className={`text-[10px] font-bold uppercase tracking-tighter ${form.moodScore === score ? 'text-primary' : 'text-slate-400'}`}>
-                        {MOOD_DATA[score].label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+                <MoodSelector
+                  size="sm"
+                  value={form.moodScore}
+                  onChange={(score) => setForm((prev) => ({ ...prev, moodScore: score }))}
+                />
                 <p className="text-sm italic text-on-surface-variant/70 pl-1">
                   💡 {MOOD_DATA[form.moodScore].tip}
                 </p>
               </div>
 
-              <div className="pt-4 flex items-center gap-4">
+              <div className="pt-4 flex flex-col sm:flex-row sm:items-center gap-4">
                 <button 
-                  className="bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 cursor-pointer active:scale-95 disabled:opacity-50" 
+                  className="w-full sm:w-auto bg-primary text-on-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 cursor-pointer active:scale-95 disabled:opacity-50" 
                   type="submit"
                   disabled={isSubmitting}
                 >

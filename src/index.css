@@ -8,6 +8,23 @@ body,
   min-height: 100%;
   margin: 0;
   overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Logged-in page shell */
+.page-main {
+  padding-top: 5.5rem;
+  padding-bottom: 4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .page-main {
+    padding-top: 7rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }
 
 body {
