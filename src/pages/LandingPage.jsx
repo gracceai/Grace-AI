@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SiteFooter from "../components/SiteFooter";
 import SiteHeader from "../components/SiteHeader";
 import TypingChatCard from "../components/TypingChatCard";
+import HeroStarfield from "../components/HeroStarfield";
 
 const markLogo = "/favicon.png";
 const specialistContact = "mailto:mercysomges@gmail.com?subject=Talk%20to%20a%20Specialist%20-%20GraceAI";
@@ -45,6 +46,7 @@ function LandingPage() {
           className="relative min-h-screen flex items-center justify-center overflow-hidden hero-gradient"
           id="home"
         >
+          <HeroStarfield />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12 relative z-10 pt-24 sm:pt-28 pb-12 md:pb-16">
             <div className="space-y-6 md:space-y-8">
               <h1 className="font-h1 text-[32px] sm:text-[42px] md:text-[56px] lg:text-[64px] leading-[1.08] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)]">

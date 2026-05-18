@@ -47,6 +47,7 @@ body {
 }
 
 .hero-gradient {
+  isolation: isolate;
   background-color: #070b18;
   background-image:
     linear-gradient(
@@ -77,6 +78,122 @@ body {
 @media (min-width: 768px) {
   .hero-gradient {
     background-position: center 40%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-gradient {
+    animation: hero-bg-drift 90s ease-in-out infinite;
+  }
+}
+
+@keyframes hero-bg-drift {
+  0%,
+  100% {
+    background-position: center 40%;
+  }
+  50% {
+    background-position: 58% 46%;
+  }
+}
+
+.hero-starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-starfield__layer {
+  position: absolute;
+  inset: -15%;
+  width: 130%;
+  height: 130%;
+  will-change: transform;
+}
+
+.hero-starfield__layer--0 {
+  animation: hero-stars-drift-a 140s linear infinite;
+}
+
+.hero-starfield__layer--1 {
+  animation: hero-stars-drift-b 110s linear infinite;
+}
+
+.hero-starfield__layer--2 {
+  animation: hero-stars-drift-c 85s linear infinite;
+}
+
+.hero-starfield__star {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.35) 55%, transparent 100%);
+  opacity: var(--star-opacity, 0.5);
+  animation: hero-star-twinkle var(--twinkle-duration, 5s) ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+@keyframes hero-stars-drift-a {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-2.5%, -1.8%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes hero-stars-drift-b {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(2%, 1.5%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes hero-stars-drift-c {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-1.2%, 2.2%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes hero-star-twinkle {
+  0%,
+  100% {
+    opacity: calc(var(--star-opacity, 0.5) * 0.55);
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: var(--star-opacity, 0.75);
+    transform: scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-gradient {
+    animation: none;
+  }
+
+  .hero-starfield__layer {
+    animation: none;
+  }
+
+  .hero-starfield__star {
+    animation: none;
   }
 }
 
