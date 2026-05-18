@@ -27,7 +27,10 @@ function SiteHeader() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState("light");
+  const [isPastHero, setIsPastHero] = useState(false);
   const isLandingPage = location.pathname === "/";
+  const isLandingGuest = isLandingPage && !currentUser;
+  const showHeroOverlayNav = isLandingGuest && !isPastHero;
   const activeSection = location.hash ? location.hash.replace("#", "") : "features";
 
   useEffect(() => {
@@ -80,6 +83,34 @@ function SiteHeader() {
     setIsMobileMenuOpen(false);
   }, [location.pathname, location.hash]);
 
+  useEffect(() => {
+    if (!isLandingGuest) {
+      setIsPastHero(false);
+      return undefined;
+    }
+
+    const updateScrollState = () => {
+      const hero = document.getElementById("home");
+      if (!hero) {
+        setIsPastHero(false);
+        return;
+      }
+
+      const headerOffset = 72;
+      const heroEnd = hero.offsetTop + hero.offsetHeight - headerOffset;
+      setIsPastHero(window.scrollY > heroEnd);
+    };
+
+    updateScrollState();
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState);
+
+    return () => {
+      window.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+    };
+  }, [isLandingGuest]);
+
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
@@ -112,12 +143,24 @@ function SiteHeader() {
 
   return (
     <>
-      <header className="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none">
+      <header
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          showHeroOverlayNav
+            ? "bg-transparent border-b border-white/10 shadow-none"
+            : isLandingGuest
+              ? "bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm"
+              : "bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none"
+        }`}
+      >
       <div className="flex items-center justify-between pl-2 pr-3 sm:pr-6 py-2.5 sm:py-3 md:py-4 gap-2 sm:gap-3 md:gap-4 max-w-[100vw]">
         <button className="flex items-center gap-2 shrink-0" onClick={() => navigate(currentUser ? "/dashboard/ai-support-chat" : "/")} type="button">
           <img
             alt="GraceAI Logo"
-            className="h-9 sm:h-11 md:h-14 lg:h-[4.5rem] w-auto object-contain drop-shadow-[0_2px_4px_rgba(49,11,99,0.18)]"
+            className={`h-9 sm:h-11 md:h-14 lg:h-[4.5rem] w-auto object-contain transition-[filter] duration-300 ${
+              showHeroOverlayNav
+                ? "brightness-0 invert drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
+                : "drop-shadow-[0_2px_4px_rgba(49,11,99,0.18)]"
+            }`}
             src="/logo.png"
           />
         </button>
@@ -128,8 +171,12 @@ function SiteHeader() {
               <button
                 className={`${navButtonBase} ${
                   isLandingPage && activeSection === item.id
-                    ? "text-purple-900 border-b-2 border-purple-900 pb-1"
-                    : "text-slate-600 hover:text-purple-700 hover:bg-slate-100/50 px-1.5 py-1"
+                    ? showHeroOverlayNav
+                      ? "text-white border-b-2 border-white pb-1"
+                      : "text-purple-900 border-b-2 border-purple-900 pb-1"
+                    : showHeroOverlayNav
+                      ? "text-white/90 hover:text-white hover:bg-white/10 px-1.5 py-1"
+                      : "text-slate-700 hover:text-purple-700 hover:bg-slate-100/50 px-1.5 py-1"
                 }`}
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
@@ -161,7 +208,11 @@ function SiteHeader() {
 
         <div className="flex items-center gap-sm md:gap-md shrink-0">
           <button
-            className="rounded-full p-2 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className={`rounded-full p-2 transition-colors ${
+              showHeroOverlayNav
+                ? "text-white/90 hover:bg-white/10"
+                : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+            }`}
             onClick={toggleTheme}
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             type="button"
@@ -200,14 +251,16 @@ function SiteHeader() {
           ) : (
             <>
               <button
-                className="hidden sm:inline-flex text-slate-600 font-medium text-sm px-4 py-2 cursor-pointer active:scale-95 transform duration-150"
+                className={`hidden sm:inline-flex font-medium text-sm px-4 py-2 cursor-pointer active:scale-95 transform duration-150 ${
+                  showHeroOverlayNav ? "text-white hover:text-white/80" : "text-slate-700"
+                }`}
                 onClick={() => navigate("/login")}
                 type="button"
               >
                 Login
               </button>
               <button
-                className="hidden sm:inline-flex bg-primary text-on-primary font-bold text-sm px-6 py-2.5 rounded-full shadow-lg hover:bg-primary-container transition-all active:scale-95 transform duration-150"
+                className="hidden sm:inline-flex bg-primary text-on-primary font-bold text-sm px-6 py-2.5 rounded-full shadow-lg hover:bg-primary/90 transition-all active:scale-95 transform duration-150"
                 onClick={() => navigate("/signup")}
                 type="button"
               >
@@ -218,7 +271,9 @@ function SiteHeader() {
 
           {/* Hamburger Menu Icon */}
           <button
-            className="md:hidden flex items-center justify-center p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+            className={`md:hidden flex items-center justify-center p-2 rounded-lg transition-colors ${
+              showHeroOverlayNav ? "text-white hover:bg-white/10" : "text-slate-700 hover:bg-slate-100"
+            }`}
             onClick={() => setIsMobileMenuOpen(true)}
             type="button"
             aria-label="Open menu"

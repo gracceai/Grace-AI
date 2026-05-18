@@ -47,10 +47,37 @@ body {
 }
 
 .hero-gradient {
-  background: linear-gradient(rgba(248, 249, 255, 0.8), rgba(248, 249, 255, 0.4)),
-    url("https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&q=80&w=2070");
+  background-color: #070b18;
+  background-image:
+    linear-gradient(
+      115deg,
+      rgba(7, 11, 24, 0.82) 0%,
+      rgba(7, 11, 24, 0.45) 45%,
+      rgba(7, 11, 24, 0.72) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(7, 11, 24, 0.55) 0%,
+      rgba(7, 11, 24, 0.25) 40%,
+      rgba(7, 11, 24, 0.7) 100%
+    ),
+    url("/hero-background.jpeg");
   background-size: cover;
-  background-position: center;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+@media (max-width: 767px) {
+  .hero-gradient {
+    background-position: center 42%;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-gradient {
+    background-position: center 40%;
+  }
 }
 
 .chat-caret {

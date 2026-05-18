@@ -40,21 +40,21 @@ function LandingPage() {
     <>
       <SiteHeader />
 
-      <main className="pt-20 sm:pt-24">
+      <main>
         <section
-          className="relative min-h-[calc(100vh-5rem)] md:min-h-[870px] flex items-center justify-center overflow-hidden hero-gradient"
+          className="relative min-h-screen flex items-center justify-center overflow-hidden hero-gradient"
           id="home"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 items-center gap-8 md:gap-12 relative z-10 py-10">
-            <div className="space-y-lg">
-              <h1 className="font-h1 text-[34px] sm:text-[42px] md:text-[64px] leading-[1.1] text-primary">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12 relative z-10 pt-24 sm:pt-28 pb-12 md:pb-16">
+            <div className="space-y-6 md:space-y-8">
+              <h1 className="font-h1 text-[32px] sm:text-[42px] md:text-[56px] lg:text-[64px] leading-[1.08] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)]">
                 Empowering Mental Resilience for Every Namibian
               </h1>
-              <p className="font-body-lg text-on-surface-variant max-w-lg">
+              <p className="font-body-lg text-base sm:text-lg text-slate-100/95 max-w-lg drop-shadow-[0_1px_10px_rgba(0,0,0,0.45)]">
                 GraceAI is your wise companion, providing steady, non-judgmental mental health
                 support through culturally-nuanced AI and secure digital tools.
               </p>
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-md pt-4">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 pt-2">
                 <button
                   className="w-full sm:w-auto bg-primary text-on-primary font-bold px-8 py-4 rounded-xl shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-all"
                   onClick={() => navigate("/signup")}
@@ -63,14 +63,14 @@ function LandingPage() {
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
                 <button
-                  className="w-full sm:w-auto border-2 border-primary text-primary font-bold px-8 py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-95 transition-all"
+                  className="w-full sm:w-auto border-2 border-white/80 text-white font-bold px-8 py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-white/10 active:scale-95 transition-all"
                   onClick={() => scrollToSection("features")}
                 >
                   View Features
                 </button>
               </div>
             </div>
-            <div className="relative w-full md:w-auto">
+            <div className="relative w-full max-w-[780px] mx-auto md:mx-0 md:ml-auto">
               <TypingChatCard />
             </div>
           </div>

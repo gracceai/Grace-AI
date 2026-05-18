@@ -55,7 +55,7 @@ function TypingChatCard() {
   const hasSenderBubble = senderTyping || senderTyped.length > 0;
 
   return (
-    <div className="bg-[#f6f7ef]/80 backdrop-blur-xl border border-white/70 p-4 sm:p-6 md:p-10 rounded-[28px] md:rounded-[40px] shadow-2xl relative overflow-hidden max-w-[780px] w-full">
+    <div className="bg-white/75 backdrop-blur-xl border border-white/60 p-4 sm:p-6 md:p-8 lg:p-10 rounded-[28px] md:rounded-[40px] shadow-2xl relative overflow-hidden w-full">
       <div className="flex items-center gap-4 mb-xl">
         <div className="w-14 h-14 bg-white rounded-full overflow-hidden flex items-center justify-center border border-slate-100 shadow-sm">
           <img src="/GraceAI Companion Logo Icon.png" alt="GraceAI" className="w-full h-full object-cover" />
