@@ -40,6 +40,17 @@ function SiteFooter() {
       </div>
       <div className="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-md">
         <p className="text-xs text-slate-400">Made with ❤️ for Namibia</p>
+        <p className="text-xs text-slate-400">
+          Developed by{" "}
+          <a
+            className="font-semibold text-slate-500 hover:text-purple-700 transition-colors"
+            href="https://www.aisod.tech/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            AISOD
+          </a>
+        </p>
       </div>
     </footer>
   );

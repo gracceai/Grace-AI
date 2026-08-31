@@ -180,7 +180,7 @@ function LandingPage() {
                 <img
                   alt="Corporate Team"
                   className="rounded-[40px] shadow-2xl relative z-10"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPYBNnsGn4h9llGqDDsAQnyY-MvVQnk8Su3sq9hI4xCxbbEZgxenA5hVrbPqhxRfq8Wpr_sXFhxv4-wzzTwXTsW3DvSNv9OPikVeiXMTP7X4PmCvyxQ5gXEkE4gpDuetG1DhfhvPSYRMeEawZE0aVroW_RZP1pWWoayUlMBaWWSS8rP_lpPzi3lvYJvaTa7ejrtGqqbqGqeV3LMWsRUNKY3hrdRwuWzmdstRIvhgJdNTZrZQVBu4dD-U0_xkFszEhvm8nu7eO2CJVg"
+                  src="/corporate.jpg"
                 />
                 <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary-container rounded-[40px] -z-0 opacity-20" />
                 <div className="absolute -top-6 -left-6 w-32 h-32 bg-secondary-container rounded-full -z-0 opacity-40" />
