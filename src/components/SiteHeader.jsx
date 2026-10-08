@@ -144,145 +144,138 @@ function SiteHeader() {
   return (
     <>
       <header
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          showHeroOverlayNav
-            ? "bg-transparent border-b border-white/10 shadow-none"
-            : isLandingGuest
-              ? "bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm"
-              : "bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none"
-        }`}
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${showHeroOverlayNav
+          ? "bg-transparent border-b border-white/10 shadow-none"
+          : isLandingGuest
+            ? "bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none"
+            : "bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none"
+          }`}
       >
-      <div className="flex items-center justify-between pl-2 pr-3 sm:pr-6 py-2.5 sm:py-3 md:py-4 gap-2 sm:gap-3 md:gap-4 max-w-[100vw]">
-        <button className="flex items-center gap-2 shrink-0" onClick={() => navigate(currentUser ? "/dashboard/ai-support-chat" : "/")} type="button">
-          <img
-            alt="GraceAI Logo"
-            className={`h-9 sm:h-11 md:h-14 lg:h-[4.5rem] w-auto object-contain transition-[filter] duration-300 ${
-              showHeroOverlayNav
+        <div className="flex items-center justify-between pl-2 pr-3 sm:pr-6 py-2.5 sm:py-3 md:py-4 gap-2 sm:gap-3 md:gap-4 max-w-[100vw]">
+          <button className="flex items-center gap-2 shrink-0" onClick={() => navigate(currentUser ? "/dashboard/ai-support-chat" : "/")} type="button">
+            <img
+              alt="GraceAI Logo"
+              className={`h-9 sm:h-11 md:h-14 lg:h-[4.5rem] w-auto object-contain transition-[filter] duration-300 ${showHeroOverlayNav
                 ? "brightness-0 invert drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
                 : "drop-shadow-[0_2px_4px_rgba(49,11,99,0.18)]"
-            }`}
-            src="/logo.png"
-          />
-        </button>
+                }`}
+              src="/logo.png"
+            />
+          </button>
 
-        {!currentUser && (
-          <nav className="hidden md:flex items-center gap-lg">
-            {navItems.map((item) => (
-              <button
-                className={`${navButtonBase} ${
-                  isLandingPage && activeSection === item.id
+          {!currentUser && (
+            <nav className="hidden md:flex items-center gap-lg">
+              {navItems.map((item) => (
+                <button
+                  className={`${navButtonBase} ${isLandingPage && activeSection === item.id
                     ? showHeroOverlayNav
                       ? "text-white border-b-2 border-white pb-1"
-                      : "text-purple-900 border-b-2 border-purple-900 pb-1"
+                      : "text-purple-900 dark:text-white border-b-2 border-purple-900 dark:border-white pb-1"
                     : showHeroOverlayNav
                       ? "text-white/90 hover:text-white hover:bg-white/10 px-1.5 py-1"
                       : "text-slate-700 hover:text-purple-700 hover:bg-slate-100/50 px-1.5 py-1"
-                }`}
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                type="button"
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        )}
-        {currentUser && (
-          <nav className="hidden md:flex items-center gap-md">
-            {dashboardNavItems.map((item) => (
-              <button
-                className={`font-plus-jakarta text-xs lg:text-sm font-medium px-2 py-1 rounded-lg transition-all cursor-pointer ${
-                  location.pathname === item.path
-                    ? "text-purple-900 bg-slate-100"
-                    : "text-slate-700 hover:text-purple-700 hover:bg-slate-100/60"
-                }`}
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                type="button"
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        )}
-
-        <div className="flex items-center gap-sm md:gap-md shrink-0">
-          <button
-            className={`rounded-full p-2 transition-colors ${
-              showHeroOverlayNav
-                ? "text-white/90 hover:bg-white/10"
-                : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-            }`}
-            onClick={toggleTheme}
-            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[24px]">
-              {theme === "dark" ? "light_mode" : "dark_mode"}
-            </span>
-          </button>
-          {currentUser ? (
-            <div className="relative flex items-center gap-2">
-              <button
-                className="rounded-full p-1 text-primary hover:bg-primary/10 transition-colors"
-                onClick={() => setIsProfileMenuOpen((open) => !open)}
-                title="Profile"
-                type="button"
-              >
-                <span className="material-symbols-outlined text-[36px]">account_circle</span>
-              </button>
-
-              {isProfileMenuOpen && (
-                <div className="hidden md:block absolute right-0 top-full mt-2 z-[60] w-60 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-4">
-                  <p className="text-xs text-slate-500">Signed in as</p>
-                  <p className="text-sm font-semibold text-primary truncate mb-3">
-                    {currentUser.user_metadata?.full_name || currentUser.email || "GraceAI User"}
-                  </p>
-                  <button
-                    className="w-full text-sm font-semibold text-primary border border-primary/30 rounded-lg py-2 hover:bg-primary/5 transition-colors"
-                    onClick={handleSignOut}
-                    type="button"
-                  >
-                    Sign out
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <button
-                className={`hidden sm:inline-flex font-medium text-sm px-4 py-2 cursor-pointer active:scale-95 transform duration-150 ${
-                  showHeroOverlayNav ? "text-white hover:text-white/80" : "text-slate-700"
-                }`}
-                onClick={() => navigate("/login")}
-                type="button"
-              >
-                Login
-              </button>
-              <button
-                className="hidden sm:inline-flex bg-primary text-on-primary font-bold text-sm px-6 py-2.5 rounded-full shadow-lg hover:bg-primary/90 transition-all active:scale-95 transform duration-150"
-                onClick={() => navigate("/signup")}
-                type="button"
-              >
-                Get Started
-              </button>
-            </>
+                    }`}
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  type="button"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          )}
+          {currentUser && (
+            <nav className="hidden md:flex items-center gap-md">
+              {dashboardNavItems.map((item) => (
+                <button
+                  className={`font-plus-jakarta text-xs lg:text-sm font-medium px-2 py-1 rounded-lg transition-all cursor-pointer ${location.pathname === item.path
+                    ? "text-purple-900 dark:text-white bg-slate-100 dark:bg-slate-800"
+                    : "text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-slate-800"
+                    }`}
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
+                  type="button"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
           )}
 
-          {/* Hamburger Menu Icon */}
-          <button
-            className={`md:hidden flex items-center justify-center p-2 rounded-lg transition-colors ${
-              showHeroOverlayNav ? "text-white hover:bg-white/10" : "text-slate-700 hover:bg-slate-100"
-            }`}
-            onClick={() => setIsMobileMenuOpen(true)}
-            type="button"
-            aria-label="Open menu"
-          >
-            <span className="material-symbols-outlined text-[28px]">menu</span>
-          </button>
+          <div className="flex items-center gap-sm md:gap-md shrink-0">
+            <button
+              className={`rounded-full p-2 transition-colors ${showHeroOverlayNav
+                ? "text-white/90 hover:bg-white/10"
+                : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                }`}
+              onClick={toggleTheme}
+              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              type="button"
+            >
+              <span className="material-symbols-outlined text-[24px]">
+                {theme === "dark" ? "light_mode" : "dark_mode"}
+              </span>
+            </button>
+            {currentUser ? (
+              <div className="relative flex items-center gap-2">
+                <button
+                  className="rounded-full p-1 text-primary hover:bg-primary/10 transition-colors"
+                  onClick={() => setIsProfileMenuOpen((open) => !open)}
+                  title="Profile"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[36px]">account_circle</span>
+                </button>
+
+                {isProfileMenuOpen && (
+                  <div className="hidden md:block absolute right-0 top-full mt-2 z-[60] w-60 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-4">
+                    <p className="text-xs text-slate-500">Signed in as</p>
+                    <p className="text-sm font-semibold text-primary truncate mb-3">
+                      {currentUser.user_metadata?.full_name || currentUser.email || "GraceAI User"}
+                    </p>
+                    <button
+                      className="w-full text-sm font-semibold text-primary border border-primary/30 rounded-lg py-2 hover:bg-primary/5 transition-colors"
+                      onClick={handleSignOut}
+                      type="button"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  className={`hidden font-medium text-sm px-4 py-2 cursor-pointer active:scale-95 transform duration-150 ${showHeroOverlayNav ? "text-white hover:text-white/80" : "text-slate-700"
+                    }`}
+                  onClick={() => navigate("/login")}
+                  type="button"
+                >
+                  Login
+                </button>
+                <button
+                  className="hidden sm:inline-flex bg-primary text-on-primary font-bold text-sm px-6 py-2.5 rounded-full shadow-lg hover:bg-primary/90 transition-all active:scale-95 transform duration-150"
+                  onClick={() => window.open("https://wa.me/264836796445", "_blank")}
+                  type="button"
+                >
+                  Chat with GraceAI
+                </button>
+              </>
+            )}
+
+            {/* Hamburger Menu Icon */}
+            <button
+              className={`md:hidden flex items-center justify-center p-2 rounded-lg transition-colors ${showHeroOverlayNav ? "text-white hover:bg-white/10" : "text-slate-700 hover:bg-slate-100"
+                }`}
+              onClick={() => setIsMobileMenuOpen(true)}
+              type="button"
+              aria-label="Open menu"
+            >
+              <span className="material-symbols-outlined text-[28px]">menu</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
 
       {/* Mobile Drawer Overlay */}
       {isMobileMenuOpen && (
@@ -309,7 +302,7 @@ function SiteHeader() {
               {!currentUser && (
                 <>
                   <button
-                    className="text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all text-slate-700 hover:bg-slate-50"
+                    className="hidden text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all text-slate-700 hover:bg-slate-50"
                     onClick={() => {
                       navigate("/login");
                       setIsMobileMenuOpen(false);
@@ -321,21 +314,20 @@ function SiteHeader() {
                   <button
                     className="text-left font-plus-jakarta text-sm font-semibold px-4 py-3 rounded-lg transition-all text-white bg-primary hover:bg-primary/90"
                     onClick={() => {
-                      navigate("/signup");
+                      window.open("https://wa.me/264836796445", "_blank");
                       setIsMobileMenuOpen(false);
                     }}
                     type="button"
                   >
-                    Get Started
+                    Message GRACEAI
                   </button>
                   {navItems.map((item) => (
                     <button
                       key={item.id}
-                      className={`text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all ${
-                        isLandingPage && activeSection === item.id
-                          ? "text-purple-900 bg-purple-50"
-                          : "text-slate-700 hover:bg-slate-50"
-                      }`}
+                      className={`text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all ${isLandingPage && activeSection === item.id
+                        ? "text-purple-900 bg-purple-50"
+                        : "text-slate-700 hover:bg-slate-50"
+                        }`}
                       onClick={() => {
                         scrollToSection(item.id);
                         setIsMobileMenuOpen(false);
@@ -352,11 +344,10 @@ function SiteHeader() {
                   {dashboardNavItems.map((item) => (
                     <button
                       key={item.path}
-                      className={`text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all ${
-                        location.pathname === item.path
-                          ? "text-purple-900 bg-purple-50"
-                          : "text-slate-700 hover:bg-slate-50"
-                      }`}
+                      className={`text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all ${location.pathname === item.path
+                        ? "text-purple-900 bg-purple-50"
+                        : "text-slate-700 hover:bg-slate-50"
+                        }`}
                       onClick={() => {
                         navigate(item.path);
                         setIsMobileMenuOpen(false);

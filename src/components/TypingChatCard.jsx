@@ -58,10 +58,10 @@ function TypingChatCard() {
     <div className="bg-white/75 backdrop-blur-xl border border-white/60 p-4 sm:p-6 md:p-8 lg:p-10 rounded-[28px] md:rounded-[40px] shadow-2xl relative overflow-hidden w-full">
       <div className="flex items-center gap-4 mb-xl">
         <div className="w-14 h-14 bg-white rounded-full overflow-hidden flex items-center justify-center border border-slate-100 shadow-sm">
-          <img src="/GraceAI Companion Logo Icon.png" alt="GraceAI" className="w-full h-full object-cover" />
+          <img src="/graceaicompanionlogoicon.png" alt="GraceAI" className="w-full h-full object-cover" />
         </div>
         <div>
-          <h3 className="font-h3 text-h3 text-primary">Grace Companion</h3>
+          <h3 className="font-h3 text-h3 text-primary dark:text-white">Grace Companion</h3>
           <p className="text-body-sm text-slate-500">{typingStatus}</p>
         </div>
       </div>
@@ -80,13 +80,13 @@ function TypingChatCard() {
         )}
       </div>
 
-      <div 
+      <div
         className="mt-xl flex items-center gap-3 py-3 px-4 bg-white/90 rounded-full border border-slate-200 cursor-pointer hover:bg-white transition-all active:scale-[0.98]"
-        onClick={() => navigate("/dashboard/ai-support-chat")}
+        onClick={() => window.open("https://wa.me/264836796445", "_blank")}
       >
         <span className="material-symbols-outlined text-slate-400 text-[28px]">add_circle</span>
         <span className="text-slate-400 flex-grow text-base">Message Grace...</span>
-        <span className="material-symbols-outlined text-primary text-[30px]">send</span>
+        <span className="material-symbols-outlined text-primary dark:text-white text-[30px]">send</span>
       </div>
     </div>
   );

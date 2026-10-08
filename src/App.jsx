@@ -17,6 +17,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import CrisisSupportPage from "./pages/CrisisSupportPage";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 function App() {
   const [session, setSession] = useState(null);
@@ -57,6 +58,7 @@ function App() {
   return (
     <>
       <CustomCursor />
+      <WhatsAppButton />
       <Routes>
         <Route element={<LandingPage />} path="/" />
       <Route

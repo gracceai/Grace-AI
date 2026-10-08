@@ -1,12 +1,12 @@
 function SiteFooter() {
   return (
-    <footer className="w-full border-t border-slate-200 bg-white pt-12 pb-8" id="contact">
+    <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 pt-12 pb-8" id="contact">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div className="space-y-md">
           <div className="flex items-center gap-2">
-            <img alt="GraceAI Logo" className="h-12 md:h-14 w-auto object-contain" src="/logo.png" />
+            <img alt="GraceAI Logo" className="h-12 md:h-14 w-auto object-contain dark:brightness-0 dark:invert" src="/logo.png" />
           </div>
-          <p className="font-plus-jakarta text-sm leading-relaxed text-slate-500 max-w-sm">
+          <p className="font-plus-jakarta text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-sm">
             © 2026 GraceAI. Empowering mental resilience across Namibia. Your steady,
             non-judgmental digital companion.
           </p>
@@ -25,7 +25,7 @@ function SiteFooter() {
             Terms of Service
           </a>
           <a
-            className="font-plus-jakarta text-sm font-semibold text-purple-900 transition-colors cursor-pointer"
+            className="font-plus-jakarta text-sm font-semibold text-purple-900 dark:text-white transition-colors cursor-pointer"
             href="/crisis-support"
           >
             Crisis Support
@@ -38,12 +38,11 @@ function SiteFooter() {
           </a>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-md">
-        <p className="text-xs text-slate-400">Made with ❤️ for Namibia</p>
+      <div className="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-slate-100 flex justify-center items-center">
         <p className="text-xs text-slate-400">
           Developed by{" "}
           <a
-            className="font-semibold text-slate-500 hover:text-purple-700 transition-colors"
+            className="font-semibold text-slate-500 hover:text-purple-700 dark:hover:text-white transition-colors"
             href="https://www.aisod.tech/"
             rel="noopener noreferrer"
             target="_blank"

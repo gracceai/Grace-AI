@@ -59,9 +59,9 @@ function LandingPage() {
               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 pt-2">
                 <button
                   className="w-full sm:w-auto bg-primary text-on-primary font-bold px-8 py-4 rounded-xl shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-all"
-                  onClick={() => navigate("/signup")}
+                  onClick={() => window.open("https://wa.me/264836796445", "_blank")}
                 >
-                  Start Your Journey
+                  Chat with GraceAI
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
                 <button
@@ -81,7 +81,7 @@ function LandingPage() {
         <section className="py-xxl bg-surface-container-low" id="why-graceai">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-xl">
-              <h2 className="font-h2 text-h2 text-primary mb-md">Bridging the Mental Health Gap</h2>
+              <h2 className="font-h2 text-h2 text-primary dark:text-white mb-md">Bridging the Mental Health Gap</h2>
               <p className="font-body-md text-on-surface-variant max-w-2xl mx-auto">
                 In Namibia, access to mental health professionals can be limited. GraceAI provides
                 an immediate, reliable first step toward emotional wellness.
@@ -89,19 +89,19 @@ function LandingPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
               <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center hover:scale-105 hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 cursor-default">
-                <span className="text-h1 font-h1 text-primary mb-xs">24/7</span>
+                <span className="text-h1 font-h1 text-primary dark:text-white mb-xs">24/7</span>
                 <p className="font-body-sm text-on-surface-variant font-medium">
                   Always Available Support
                 </p>
               </div>
               <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center hover:scale-105 hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 cursor-default">
-                <span className="text-h1 font-h1 text-primary mb-xs">100%</span>
+                <span className="text-h1 font-h1 text-primary dark:text-white mb-xs">100%</span>
                 <p className="font-body-sm text-on-surface-variant font-medium">
                   Private &amp; Local Hosting
                 </p>
               </div>
               <div className="bg-white p-xl rounded-xl shadow-sm border border-slate-100 flex flex-col items-center text-center hover:scale-105 hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 cursor-default">
-                <span className="text-h1 font-h1 text-primary mb-xs">0s</span>
+                <span className="text-h1 font-h1 text-primary dark:text-white mb-xs">0s</span>
                 <p className="font-body-sm text-on-surface-variant font-medium">
                   Waiting Time for Crisis Aid
                 </p>
@@ -114,10 +114,10 @@ function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex flex-col md:flex-row justify-between items-end mb-xl gap-md">
               <div className="max-w-xl">
-                <span className="text-primary font-bold tracking-widest text-xs uppercase mb-2 block">
+                <span className="text-primary dark:text-white font-bold tracking-widest text-xs uppercase mb-2 block">
                   Our Tools
                 </span>
-                <h2 className="font-h2 text-h2 text-primary">Comprehensive Care at Your Fingertips</h2>
+                <h2 className="font-h2 text-h2 text-primary dark:text-white">Comprehensive Care at Your Fingertips</h2>
               </div>
               <div className="hidden md:block">
                 <img
@@ -134,7 +134,7 @@ function LandingPage() {
                     chat_bubble
                   </span>
                 </div>
-                <h3 className="font-h3 text-h3 text-primary mb-md">Empathetic AI Chat</h3>
+                <h3 className="font-h3 text-h3 text-primary dark:text-white mb-md">Empathetic AI Chat</h3>
                 <p className="font-body-md text-on-surface-variant mb-xl">
                   A companion that listens without judgment, trained on empathetic communication to
                   help you process feelings in real-time.
@@ -148,7 +148,7 @@ function LandingPage() {
                     dashboard
                   </span>
                 </div>
-                <h3 className="font-h3 text-h3 text-primary mb-md">Wellness Dashboard</h3>
+                <h3 className="font-h3 text-h3 text-primary dark:text-white mb-md">Wellness Dashboard</h3>
                 <p className="font-body-md text-on-surface-variant mb-xl">
                   Track your emotional trajectory with smooth Bézier curves and visual mood
                   indicators designed for clarity and calm.
@@ -158,11 +158,11 @@ function LandingPage() {
 
               <div className="group p-xl rounded-[32px] bg-primary-fixed/30 border border-primary-fixed hover:shadow-xl transition-all duration-300">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-lg shadow-sm">
-                  <span className="material-symbols-outlined text-primary text-[32px]">
+                  <span className="material-symbols-outlined text-primary dark:text-white text-[32px]">
                     auto_stories
                   </span>
                 </div>
-                <h3 className="font-h3 text-h3 text-primary mb-md">Private Journal</h3>
+                <h3 className="font-h3 text-h3 text-primary dark:text-white mb-md">Private Journal</h3>
                 <p className="font-body-md text-on-surface-variant mb-xl">
                   A secure, encrypted space for your thoughts. Guided prompts help you navigate
                   grief, anxiety, and daily stress.
@@ -187,10 +187,10 @@ function LandingPage() {
               </div>
             </div>
             <div className="order-1 md:order-2 space-y-lg">
-              <span className="text-secondary font-bold tracking-widest text-xs uppercase">
+              <span className="text-secondary dark:text-emerald-300 font-bold tracking-widest text-xs uppercase">
                 For Organizations
               </span>
-              <h2 className="font-h2 text-[36px] leading-tight text-primary">
+              <h2 className="font-h2 text-[36px] leading-tight text-primary dark:text-white">
                 GraceAI for Corporate Resilience
               </h2>
               <p className="font-body-lg text-on-surface-variant">
@@ -202,7 +202,7 @@ function LandingPage() {
                 <li className="flex items-start gap-md">
                   <span className="material-symbols-outlined text-secondary mt-1">check_circle</span>
                   <div>
-                    <h4 className="font-bold text-primary">Anonymized Workforce Analytics</h4>
+                    <h4 className="font-bold text-primary dark:text-white">Anonymized Workforce Analytics</h4>
                     <p className="text-body-sm text-on-surface-variant">
                       Identify burnout trends without compromising individual privacy.
                     </p>
@@ -211,7 +211,7 @@ function LandingPage() {
                 <li className="flex items-start gap-md">
                   <span className="material-symbols-outlined text-secondary mt-1">check_circle</span>
                   <div>
-                    <h4 className="font-bold text-primary">Stress Management Workshops</h4>
+                    <h4 className="font-bold text-primary dark:text-white">Stress Management Workshops</h4>
                     <p className="text-body-sm text-on-surface-variant">
                       AI-driven sessions tailored to your specific industry challenges.
                     </p>
@@ -289,7 +289,7 @@ function LandingPage() {
         <section className="py-xxl relative overflow-hidden">
           <div className="absolute inset-0 bg-primary opacity-5" />
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
-            <h2 className="font-h1 text-[32px] sm:text-[40px] md:text-[52px] leading-tight text-primary mb-lg">
+            <h2 className="font-h1 text-[32px] sm:text-[40px] md:text-[52px] leading-tight text-primary dark:text-white mb-lg">
               Take the First Step Toward a Calmer Mind
             </h2>
             <p className="font-body-lg text-on-surface-variant mb-xl">
@@ -299,12 +299,12 @@ function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-md justify-center" id="cta">
               <button
                 className="bg-primary text-on-primary font-bold px-12 py-5 rounded-full text-lg shadow-2xl hover:scale-105 transition-all"
-                onClick={() => navigate("/signup")}
+                onClick={() => window.open("https://wa.me/264836796445", "_blank")}
               >
-                Get Started for Free
+                Chat with GraceAI
               </button>
               <a
-                className="bg-white border-2 border-primary text-primary font-bold px-12 py-5 rounded-full text-lg hover:bg-primary/5 transition-all"
+                className="bg-white border-2 border-primary text-primary dark:text-white font-bold px-12 py-5 rounded-full text-lg hover:bg-primary/5 transition-all"
                 href={specialistContact}
                 onClick={() => scrollToSection("contact")}
               >
