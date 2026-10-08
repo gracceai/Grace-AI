@@ -313,21 +313,21 @@ function DashboardPage({ session }) {
                 <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
                   <button 
                      onClick={() => setChartType('bar')} 
-                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'bar' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'bar' ? 'active-filter bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                      <span className="material-symbols-outlined text-[18px]">bar_chart</span>
                      Bar
                   </button>
                   <button 
                      onClick={() => setChartType('line')} 
-                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'line' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'line' ? 'active-filter bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                      <span className="material-symbols-outlined text-[18px]">show_chart</span>
                      Line
                   </button>
                   <button 
                      onClick={() => setChartType('pie')} 
-                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'pie' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${chartType === 'pie' ? 'active-filter bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                      <span className="material-symbols-outlined text-[18px]">pie_chart</span>
                      Pie
@@ -485,19 +485,19 @@ function DashboardPage({ session }) {
                 <div className="flex items-center gap-2 mb-6 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
                   <button 
                     onClick={() => setGoalFilter('all')}
-                    className={`flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${goalFilter === 'all' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${goalFilter === 'all' ? 'active-filter bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                     All ({wellnessGoals.length})
                   </button>
                   <button 
                     onClick={() => setGoalFilter('active')}
-                    className={`flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${goalFilter === 'active' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${goalFilter === 'active' ? 'active-filter bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                     In Progress ({wellnessGoals.filter(g => g.current_value < g.target_value).length})
                   </button>
                   <button 
                     onClick={() => setGoalFilter('completed')}
-                    className={`flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${goalFilter === 'completed' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${goalFilter === 'completed' ? 'active-filter bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                     Completed ({wellnessGoals.filter(g => g.current_value >= g.target_value).length})
                   </button>
@@ -550,7 +550,7 @@ function DashboardPage({ session }) {
                             return (
                               <div key={goal.id} className={`group relative p-4 rounded-2xl border transition-all ${isCompleted ? 'bg-primary/5 border-primary/20' : 'bg-white border-slate-100 shadow-sm'}`}>
                                 {/* Action Buttons (Visible on hover) */}
-                                <div className="absolute top-4 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute top-4 right-4 flex items-center gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                                   <button 
                                     onClick={() => setEditingGoal(goal)}
                                     className="p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors"

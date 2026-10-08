@@ -147,7 +147,7 @@ function ResetPasswordPage({ session }) {
               )}
 
               <button
-                className="w-full bg-primary-container text-on-secondary py-4 rounded-xl font-body-lg font-bold hover:scale-[1.02] active:scale-95 transition-all duration-200 shadow-lg shadow-primary-container/30 flex items-center justify-center gap-2 disabled:opacity-70"
+                className="w-full bg-primary-container text-white py-4 rounded-xl font-body-lg font-bold hover:bg-primary hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-primary-container/30 flex items-center justify-center gap-2 disabled:opacity-70"
                 type="submit"
                 disabled={loading}
               >

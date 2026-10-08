@@ -2,65 +2,50 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
-const navItems = [
+const landingLinks = [
   { id: "features", label: "Features" },
   { id: "corporate", label: "Corporate" },
   { id: "why-graceai", label: "Why GraceAI" },
   { id: "resources", label: "Resources" },
 ];
 
-const dashboardNavItems = [
+const appLinks = [
   { path: "/dashboard", label: "Dashboard" },
-  { path: "/dashboard/stigma-support", label: "Stigma-Sensitive Health Support" },
-  { path: "/dashboard/quick-mood-checkin", label: "Quick Mood Check-in" },
+  { path: "/dashboard/stigma-support", label: "Health Support" },
+  { path: "/dashboard/quick-mood-checkin", label: "Mood Check-in" },
   { path: "/dashboard/journal", label: "Journal" },
-  { path: "/dashboard/ai-support-chat", label: "AI Support Chat" },
+  { path: "/dashboard/ai-support-chat", label: "AI Support" },
 ];
-
-const navButtonBase =
-  "font-plus-jakarta text-sm font-medium tracking-tight rounded-lg transition-all duration-300";
 
 function SiteHeader() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentUser, setCurrentUser] = useState(null);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
-  const [isPastHero, setIsPastHero] = useState(false);
-  const isLandingPage = location.pathname === "/";
-  const isLandingGuest = isLandingPage && !currentUser;
-  const showHeroOverlayNav = isLandingGuest && !isPastHero;
-  const activeSection = location.hash ? location.hash.replace("#", "") : "features";
+  const [user, setUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState(
+    location.hash ? location.hash.slice(1) : ""
+  );
+  const [theme, setTheme] = useState(() =>
+    document.documentElement.classList.contains("dark") ? "dark" : "light"
+  );
+
+  const onLanding = location.pathname === "/";
+  const overHero = onLanding && !user && !scrolled;
+  const mobileBreakpoint = user ? "xl:hidden" : "lg:hidden";
 
   useEffect(() => {
     let mounted = true;
+    if (!supabase) return () => {};
 
-    const loadSession = async () => {
-      if (!supabase) {
-        setCurrentUser(null);
-        return;
-      }
-
-      const { data } = await supabase.auth.getSession();
-
-      if (mounted) {
-        setCurrentUser(data.session?.user ?? null);
-      }
-    };
-
-    loadSession();
-
-    if (!supabase) {
-      return () => {
-        mounted = false;
-      };
-    }
-
+    supabase.auth.getSession().then(({ data }) => {
+      if (mounted) setUser(data.session?.user ?? null);
+    });
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user ?? null);
+      setUser(session?.user ?? null);
     });
 
     return () => {
@@ -70,113 +55,114 @@ function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const preferredDark =
-      window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const nextTheme = storedTheme === "dark" || (!storedTheme && preferredDark) ? "dark" : "light";
-    document.documentElement.classList.toggle("dark", nextTheme === "dark");
-    setTheme(nextTheme);
+    const saved = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const next = saved === "dark" || (!saved && prefersDark) ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", next === "dark");
+    setTheme(next);
   }, []);
 
   useEffect(() => {
-    setIsProfileMenuOpen(false);
-    setIsMobileMenuOpen(false);
+    setMenuOpen(false);
+    setProfileOpen(false);
+    if (location.hash) setActiveSection(location.hash.slice(1));
   }, [location.pathname, location.hash]);
 
   useEffect(() => {
-    if (!isLandingGuest) {
-      setIsPastHero(false);
+    if (!onLanding || user) {
+      setScrolled(false);
       return undefined;
     }
+    const update = () => setScrolled(window.scrollY > 24);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [onLanding, user]);
 
-    const updateScrollState = () => {
-      const hero = document.getElementById("home");
-      if (!hero) {
-        setIsPastHero(false);
-        return;
-      }
+  useEffect(() => {
+    if (!onLanding) return undefined;
+    const sections = landingLinks
+      .map(({ id }) => document.getElementById(id))
+      .filter(Boolean);
+    if (!sections.length) return undefined;
 
-      const headerOffset = 72;
-      const heroEnd = hero.offsetTop + hero.offsetHeight - headerOffset;
-      setIsPastHero(window.scrollY > heroEnd);
-    };
-
-    updateScrollState();
-    window.addEventListener("scroll", updateScrollState, { passive: true });
-    window.addEventListener("resize", updateScrollState);
-
-    return () => {
-      window.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
-    };
-  }, [isLandingGuest]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-20% 0px -60% 0px", threshold: [0, 0.1, 0.3] }
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [onLanding]);
 
   const toggleTheme = () => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
-    localStorage.setItem("theme", nextTheme);
-    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
   };
 
-  const scrollToSection = (sectionId) => {
-    if (!isLandingPage) {
-      navigate(`/#${sectionId}`);
+  const openSection = (id) => {
+    if (!onLanding) {
+      navigate(`/#${id}`);
       return;
     }
-
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.history.replaceState(null, "", `/#${sectionId}`);
-    }
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", `/#${id}`);
   };
 
-  const handleSignOut = async () => {
-    if (!supabase) {
-      return;
-    }
-
-    await supabase.auth.signOut();
-    setIsProfileMenuOpen(false);
+  const signOut = async () => {
+    if (supabase) await supabase.auth.signOut();
+    setProfileOpen(false);
     navigate("/");
   };
 
   return (
     <>
       <header
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${showHeroOverlayNav
-          ? "bg-transparent border-b border-white/10 shadow-none"
-          : isLandingGuest
-            ? "bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none"
-            : "bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none"
-          }`}
+        className={`fixed inset-x-0 top-0 z-50 border-b transition duration-300 ${
+          overHero
+            ? "border-white/10 bg-[#0b0712]/45 text-white backdrop-blur-lg"
+            : "border-slate-200/70 bg-white/90 text-slate-900 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-[#0d0914]/90 dark:text-white"
+        }`}
       >
-        <div className="flex items-center justify-between pl-2 pr-3 sm:pr-6 py-2.5 sm:py-3 md:py-4 gap-2 sm:gap-3 md:gap-4 max-w-[100vw]">
-          <button className="flex items-center gap-2 shrink-0" onClick={() => navigate(currentUser ? "/dashboard/ai-support-chat" : "/")} type="button">
-            <img
-              alt="GraceAI Logo"
-              className={`h-9 sm:h-11 md:h-14 lg:h-[4.5rem] w-auto object-contain transition-[filter] duration-300 ${showHeroOverlayNav
-                ? "brightness-0 invert drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
-                : "drop-shadow-[0_2px_4px_rgba(49,11,99,0.18)]"
-                }`}
-              src="/logo.png"
-            />
+        <div className="site-container flex h-[76px] items-center justify-between gap-3 sm:h-[84px]">
+          <button
+            aria-label="GraceAI home"
+            className="flex shrink-0 items-center gap-2.5"
+            onClick={() => navigate(user ? "/dashboard/ai-support-chat" : "/")}
+            type="button"
+          >
+            <img alt="" className="h-10 w-10 rounded-full shadow-md sm:h-11 sm:w-11" src="/favicon.png" />
+            <span
+              className={`font-plus-jakarta text-xl font-bold tracking-[-0.04em] sm:text-[22px] ${
+                overHero ? "text-white" : "text-primary dark:text-white"
+              }`}
+            >
+              GraceAI
+            </span>
           </button>
 
-          {!currentUser && (
-            <nav className="hidden md:flex items-center gap-lg">
-              {navItems.map((item) => (
+          {!user && (
+            <nav aria-label="Main navigation" className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 lg:flex">
+              {landingLinks.map((item) => (
                 <button
-                  className={`${navButtonBase} ${isLandingPage && activeSection === item.id
-                    ? showHeroOverlayNav
-                      ? "text-white border-b-2 border-white pb-1"
-                      : "text-purple-900 dark:text-white border-b-2 border-purple-900 dark:border-white pb-1"
-                    : showHeroOverlayNav
-                      ? "text-white/90 hover:text-white hover:bg-white/10 px-1.5 py-1"
-                      : "text-slate-700 hover:text-purple-700 hover:bg-slate-100/50 px-1.5 py-1"
-                    }`}
+                  className={`rounded-full px-4 py-2 font-plus-jakarta text-sm font-semibold transition ${
+                    activeSection === item.id
+                      ? overHero
+                        ? "bg-white/15 text-white"
+                        : "bg-primary/10 text-primary dark:bg-white/10 dark:text-white"
+                      : overHero
+                        ? "text-white/80 hover:bg-white/10 hover:text-white"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-primary dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+                  }`}
                   key={item.id}
-                  onClick={() => scrollToSection(item.id)}
+                  onClick={() => openSection(item.id)}
                   type="button"
                 >
                   {item.label}
@@ -184,14 +170,16 @@ function SiteHeader() {
               ))}
             </nav>
           )}
-          {currentUser && (
-            <nav className="hidden md:flex items-center gap-md">
-              {dashboardNavItems.map((item) => (
+
+          {user && (
+            <nav aria-label="Dashboard navigation" className="hidden items-center gap-1 xl:flex">
+              {appLinks.map((item) => (
                 <button
-                  className={`font-plus-jakarta text-xs lg:text-sm font-medium px-2 py-1 rounded-lg transition-all cursor-pointer ${location.pathname === item.path
-                    ? "text-purple-900 dark:text-white bg-slate-100 dark:bg-slate-800"
-                    : "text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-slate-800"
-                    }`}
+                  className={`rounded-full px-3 py-2 text-xs font-semibold transition ${
+                    location.pathname === item.path
+                      ? "bg-primary/10 text-primary dark:bg-white/10 dark:text-white"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-primary dark:text-slate-300 dark:hover:bg-white/10"
+                  }`}
                   key={item.path}
                   onClick={() => navigate(item.path)}
                   type="button"
@@ -202,42 +190,36 @@ function SiteHeader() {
             </nav>
           )}
 
-          <div className="flex items-center gap-sm md:gap-md shrink-0">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <button
-              className={`rounded-full p-2 transition-colors ${showHeroOverlayNav
-                ? "text-white/90 hover:bg-white/10"
-                : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-                }`}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              className={`rounded-full p-2 transition ${overHero ? "text-white/90 hover:bg-white/10" : "text-slate-600 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"}`}
               onClick={toggleTheme}
-              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               type="button"
             >
-              <span className="material-symbols-outlined text-[24px]">
+              <span className="material-symbols-outlined text-[23px]">
                 {theme === "dark" ? "light_mode" : "dark_mode"}
               </span>
             </button>
-            {currentUser ? (
-              <div className="relative flex items-center gap-2">
+
+            {user ? (
+              <div className="relative hidden xl:block">
                 <button
-                  className="rounded-full p-1 text-primary hover:bg-primary/10 transition-colors"
-                  onClick={() => setIsProfileMenuOpen((open) => !open)}
-                  title="Profile"
+                  aria-expanded={profileOpen}
+                  aria-label="Open profile menu"
+                  className="rounded-full p-1 text-primary transition hover:bg-primary/10 dark:text-white"
+                  onClick={() => setProfileOpen((open) => !open)}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-[36px]">account_circle</span>
+                  <span className="material-symbols-outlined text-[34px]">account_circle</span>
                 </button>
-
-                {isProfileMenuOpen && (
-                  <div className="hidden md:block absolute right-0 top-full mt-2 z-[60] w-60 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-4">
+                {profileOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-60 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-xl dark:border-slate-700 dark:bg-slate-900">
                     <p className="text-xs text-slate-500">Signed in as</p>
-                    <p className="text-sm font-semibold text-primary truncate mb-3">
-                      {currentUser.user_metadata?.full_name || currentUser.email || "GraceAI User"}
+                    <p className="mb-3 truncate text-sm font-semibold text-primary dark:text-white">
+                      {user.user_metadata?.full_name || user.email || "GraceAI User"}
                     </p>
-                    <button
-                      className="w-full text-sm font-semibold text-primary border border-primary/30 rounded-lg py-2 hover:bg-primary/5 transition-colors"
-                      onClick={handleSignOut}
-                      type="button"
-                    >
+                    <button className="secondary-button w-full" onClick={signOut} type="button">
                       Sign out
                     </button>
                   </div>
@@ -246,131 +228,111 @@ function SiteHeader() {
             ) : (
               <>
                 <button
-                  className={`hidden font-medium text-sm px-4 py-2 cursor-pointer active:scale-95 transform duration-150 ${showHeroOverlayNav ? "text-white hover:text-white/80" : "text-slate-700"
-                    }`}
+                  className={`hidden px-3 py-2 text-sm font-semibold transition lg:inline-flex ${overHero ? "text-white hover:text-white/75" : "text-slate-700 dark:text-slate-200"}`}
                   onClick={() => navigate("/login")}
                   type="button"
                 >
                   Login
                 </button>
-                <button
-                  className="hidden sm:inline-flex bg-primary text-on-primary font-bold text-sm px-6 py-2.5 rounded-full shadow-lg hover:bg-primary/90 transition-all active:scale-95 transform duration-150"
-                  onClick={() => window.open("https://wa.me/264836796445", "_blank")}
-                  type="button"
+                <a
+                  className={`hidden min-h-11 items-center rounded-full px-5 text-sm font-bold shadow-lg transition lg:inline-flex ${
+                    overHero ? "hero-primary-button" : "bg-primary text-white hover:bg-primary-container"
+                  }`}
+                  href="https://wa.me/264836796445"
+                  rel="noreferrer"
+                  target="_blank"
                 >
                   Chat with GraceAI
-                </button>
+                </a>
               </>
             )}
 
-            {/* Hamburger Menu Icon */}
             <button
-              className={`md:hidden flex items-center justify-center p-2 rounded-lg transition-colors ${showHeroOverlayNav ? "text-white hover:bg-white/10" : "text-slate-700 hover:bg-slate-100"
-                }`}
-              onClick={() => setIsMobileMenuOpen(true)}
-              type="button"
+              aria-expanded={menuOpen}
               aria-label="Open menu"
+              className={`flex items-center justify-center rounded-xl p-2 transition ${mobileBreakpoint} ${
+                overHero
+                  ? "text-white hover:bg-white/10"
+                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"
+              }`}
+              onClick={() => setMenuOpen(true)}
+              type="button"
             >
-              <span className="material-symbols-outlined text-[28px]">menu</span>
+              <span className="material-symbols-outlined text-[27px]">menu</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[100] md:hidden">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
-            onClick={() => setIsMobileMenuOpen(false)}
-          ></div>
-
-          {/* Drawer Panel */}
-          <div className="fixed inset-y-0 right-0 w-full max-w-64 bg-white dark:bg-slate-900 shadow-2xl flex flex-col transition-transform transform">
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
-              <span className="font-bold text-lg text-primary">Menu</span>
+      {menuOpen && (
+        <div className={`fixed inset-0 z-[100] ${mobileBreakpoint}`}>
+          <button
+            aria-label="Close menu"
+            className="absolute inset-0 h-full w-full bg-slate-950/55 backdrop-blur-sm"
+            onClick={() => setMenuOpen(false)}
+            type="button"
+          />
+          <aside className="absolute inset-y-0 right-0 flex w-full max-w-[340px] flex-col bg-white shadow-2xl dark:bg-[#0d0914]">
+            <div className="flex items-center justify-between border-b border-slate-200 p-5 dark:border-white/10">
+              <span className="font-plus-jakarta text-lg font-bold text-primary dark:text-white">Menu</span>
               <button
-                className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close menu"
+                className="rounded-full p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10"
+                onClick={() => setMenuOpen(false)}
                 type="button"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <div className="flex flex-col p-4 overflow-y-auto gap-2">
-              {!currentUser && (
+            <nav className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
+              {(user ? appLinks : landingLinks).map((item) => {
+                const selected = user
+                  ? location.pathname === item.path
+                  : activeSection === item.id;
+                return (
+                  <button
+                    className={`rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                      selected
+                        ? "bg-primary/10 text-primary dark:bg-white/10 dark:text-white"
+                        : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/5"
+                    }`}
+                    key={user ? item.path : item.id}
+                    onClick={() => {
+                      if (user) navigate(item.path);
+                      else openSection(item.id);
+                      setMenuOpen(false);
+                    }}
+                    type="button"
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+              {!user && (
                 <>
                   <button
-                    className="hidden text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all text-slate-700 hover:bg-slate-50"
-                    onClick={() => {
-                      navigate("/login");
-                      setIsMobileMenuOpen(false);
-                    }}
+                    className="mt-2 rounded-xl px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/5"
+                    onClick={() => navigate("/login")}
                     type="button"
                   >
                     Login
                   </button>
-                  <button
-                    className="text-left font-plus-jakarta text-sm font-semibold px-4 py-3 rounded-lg transition-all text-white bg-primary hover:bg-primary/90"
-                    onClick={() => {
-                      window.open("https://wa.me/264836796445", "_blank");
-                      setIsMobileMenuOpen(false);
-                    }}
-                    type="button"
-                  >
-                    Message GRACEAI
-                  </button>
-                  {navItems.map((item) => (
-                    <button
-                      key={item.id}
-                      className={`text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all ${isLandingPage && activeSection === item.id
-                        ? "text-purple-900 bg-purple-50"
-                        : "text-slate-700 hover:bg-slate-50"
-                        }`}
-                      onClick={() => {
-                        scrollToSection(item.id);
-                        setIsMobileMenuOpen(false);
-                      }}
-                      type="button"
-                    >
-                      {item.label}
-                    </button>
-                  ))}
+                  <a className="primary-button mt-1" href="https://wa.me/264836796445" rel="noreferrer" target="_blank">
+                    Chat with GraceAI
+                  </a>
                 </>
               )}
-              {currentUser && (
-                <>
-                  {dashboardNavItems.map((item) => (
-                    <button
-                      key={item.path}
-                      className={`text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all ${location.pathname === item.path
-                        ? "text-purple-900 bg-purple-50"
-                        : "text-slate-700 hover:bg-slate-50"
-                        }`}
-                      onClick={() => {
-                        navigate(item.path);
-                        setIsMobileMenuOpen(false);
-                      }}
-                      type="button"
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                  <button
-                    className="text-left font-plus-jakarta text-sm font-medium px-4 py-3 rounded-lg transition-all text-slate-700 hover:bg-slate-50"
-                    onClick={() => {
-                      handleSignOut();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    type="button"
-                  >
-                    Sign out
-                  </button>
-                </>
+              {user && (
+                <button
+                  className="mt-auto rounded-xl px-4 py-3 text-left text-sm font-semibold text-red-600 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/30"
+                  onClick={signOut}
+                  type="button"
+                >
+                  Sign out
+                </button>
               )}
-            </div>
-          </div>
+            </nav>
+          </aside>
         </div>
       )}
     </>

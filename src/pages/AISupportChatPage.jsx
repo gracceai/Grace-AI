@@ -638,7 +638,7 @@ function AISupportChatPage({ session }) {
                      <span className="text-[9px] text-slate-500 font-medium truncate w-12 text-center mt-0.5">{item.file.name.split('.').pop() || "doc"}</span>
                    </div>
                 )}
-                <button type="button" onClick={() => removeAttachment(idx)} className="absolute top-1 right-1 bg-black/60 hover:bg-black text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <button type="button" onClick={() => removeAttachment(idx)} className="absolute top-1 right-1 bg-black/60 hover:bg-black text-white rounded-full p-0.5 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 cursor-pointer">
                   <span className="material-symbols-outlined text-[14px]">close</span>
                 </button>
               </div>
@@ -832,7 +832,7 @@ function AISupportChatPage({ session }) {
                 ) : (
                   <>
                     <span className="truncate text-sm font-medium pr-2 flex-1">{item.session_title}</span>
-                    <div className="opacity-0 group-hover:opacity-100 flex items-center shrink-0">
+                    <div className="flex shrink-0 items-center opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                       <button 
                         type="button"
                         onClick={(e) => { 
@@ -1038,7 +1038,7 @@ function AISupportChatPage({ session }) {
                                        <div className="flex items-center gap-4 mt-2 transition-opacity">
                                          
                                          {/* Action Icons */}
-                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                                         <div className="flex items-center gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                                            <button onClick={() => handleCopy(message.message)} className="flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors p-1.5 rounded hover:bg-slate-100" title="Copy response">
                                              <span className="material-symbols-outlined text-[16px]">content_copy</span>
                                            </button>

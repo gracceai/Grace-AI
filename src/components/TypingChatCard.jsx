@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const listenerMessage =
   "Hello. I'm here to listen. How are you feeling after today's walk near the dunes?";
@@ -8,7 +7,6 @@ const senderMessage = "It was peaceful, but I'm still feeling a bit overwhelmed 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function TypingChatCard() {
-  const navigate = useNavigate();
   const [listenerTyped, setListenerTyped] = useState("");
   const [senderTyped, setSenderTyped] = useState("");
   const [listenerTyping, setListenerTyping] = useState(false);
@@ -30,6 +28,12 @@ function TypingChatCard() {
     };
 
     const runAnimation = async () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setListenerTyped(listenerMessage);
+        setSenderTyped(senderMessage);
+        return;
+      }
+
       while (active) {
         setListenerTyped("");
         setSenderTyped("");
@@ -55,39 +59,47 @@ function TypingChatCard() {
   const hasSenderBubble = senderTyping || senderTyped.length > 0;
 
   return (
-    <div className="bg-white/75 backdrop-blur-xl border border-white/60 p-4 sm:p-6 md:p-8 lg:p-10 rounded-[28px] md:rounded-[40px] shadow-2xl relative overflow-hidden w-full">
-      <div className="flex items-center gap-4 mb-xl">
-        <div className="w-14 h-14 bg-white rounded-full overflow-hidden flex items-center justify-center border border-slate-100 shadow-sm">
+    <div className="relative w-full overflow-hidden rounded-[28px] border border-white/35 bg-white/[0.92] p-5 shadow-[0_32px_90px_-24px_rgba(0,0,0,0.55)] backdrop-blur-2xl sm:p-7 md:rounded-[32px] md:p-8">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
+      <div className="mb-7 flex items-center gap-3.5">
+        <div className="h-12 w-12 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
           <img src="/graceaicompanionlogoicon.png" alt="GraceAI" className="w-full h-full object-cover" />
         </div>
-        <div>
-          <h3 className="font-h3 text-h3 text-primary dark:text-white">Grace Companion</h3>
-          <p className="text-body-sm text-slate-500">{typingStatus}</p>
+        <div className="min-w-0">
+          <h3 className="font-plus-jakarta text-base font-bold text-slate-950">Grace Companion</h3>
+          <p className="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {typingStatus}
+          </p>
         </div>
+        <span className="material-symbols-outlined ml-auto text-[20px] text-slate-400">more_horiz</span>
       </div>
 
-      <div className="space-y-md min-h-[180px] sm:min-h-[220px]">
-        <div className="bg-[#c4cec0]/85 p-4 sm:p-5 rounded-[22px] rounded-tl-sm max-w-[95%] sm:max-w-[86%] text-body-md sm:text-body-lg text-[#2a4f4a] leading-relaxed">
+      <div className="min-h-[210px] space-y-4 sm:min-h-[230px]">
+        <div className="max-w-[92%] rounded-[20px] rounded-tl-md bg-[#edf3f1] p-4 text-sm leading-6 text-[#294841] sm:max-w-[86%] sm:text-[15px]">
           {listenerTyped}
           {listenerTyping && <span className="chat-caret">▋</span>}
         </div>
 
         {hasSenderBubble && (
-          <div className="bg-primary text-white p-4 sm:p-5 rounded-[22px] rounded-tr-sm max-w-[95%] sm:max-w-[86%] ml-auto text-body-md sm:text-body-lg font-semibold leading-relaxed">
+          <div className="ml-auto max-w-[92%] rounded-[20px] rounded-tr-md bg-primary p-4 text-sm font-medium leading-6 text-white shadow-lg shadow-primary/15 sm:max-w-[86%] sm:text-[15px]">
             {senderTyped}
             {senderTyping && <span className="chat-caret">▋</span>}
           </div>
         )}
       </div>
 
-      <div
-        className="mt-xl flex items-center gap-3 py-3 px-4 bg-white/90 rounded-full border border-slate-200 cursor-pointer hover:bg-white transition-all active:scale-[0.98]"
-        onClick={() => window.open("https://wa.me/264836796445", "_blank")}
+      <button
+        className="mt-6 flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left transition hover:border-primary/20 hover:bg-white active:scale-[0.99]"
+        onClick={() => window.open("https://wa.me/264836796445", "_blank", "noopener,noreferrer")}
+        type="button"
       >
-        <span className="material-symbols-outlined text-slate-400 text-[28px]">add_circle</span>
-        <span className="text-slate-400 flex-grow text-base">Message Grace...</span>
-        <span className="material-symbols-outlined text-primary dark:text-white text-[30px]">send</span>
-      </div>
+        <span className="material-symbols-outlined text-[21px] text-slate-400">add_circle</span>
+        <span className="flex-grow text-sm text-slate-400">Message Grace...</span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-white">
+          <span className="material-symbols-outlined text-[17px]">arrow_upward</span>
+        </span>
+      </button>
     </div>
   );
 }

@@ -36,13 +36,13 @@ function MoodSelector({ value, onChange, size = "md" }) {
                 isCompact
                   ? "text-2xl sm:text-3xl"
                   : "text-3xl sm:text-4xl md:text-5xl"
-              } ${selected ? "animate-bounce-subtle" : ""}`}
+              } ${selected ? "motion-safe:animate-bounce-subtle" : ""}`}
             >
               {emoji}
             </span>
             <span
               className={`w-full truncate text-center font-bold uppercase tracking-tight ${
-                isCompact ? "text-[8px] sm:text-[10px]" : "text-[9px] sm:text-xs"
+                isCompact ? "text-[10px] sm:text-xs" : "text-[10px] sm:text-xs"
               } ${selected ? "text-primary" : "text-slate-400"}`}
             >
               {label}

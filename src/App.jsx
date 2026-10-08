@@ -1,23 +1,37 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AuthRoute from "./components/AuthRoute";
 import { supabase } from "./lib/supabase";
-import AISupportChatPage from "./pages/AISupportChatPage";
-import DashboardPage from "./pages/DashboardPage";
-import LandingPage from "./pages/LandingPage";
-import LoginPage from "./pages/LoginPage";
-import QuickMoodCheckinPage from "./pages/QuickMoodCheckinPage";
-import SignupPage from "./pages/SignupPage";
-import StigmaSupportPage from "./pages/StigmaSupportPage";
-import JournalPage from "./pages/JournalPage";
-import ViewJournalEntryPage from "./pages/ViewJournalEntryPage";
-import CustomCursor from "./components/CustomCursor";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import TermsOfServicePage from "./pages/TermsOfServicePage";
-import CrisisSupportPage from "./pages/CrisisSupportPage";
-import WhatsAppButton from "./components/WhatsAppButton";
+
+const AISupportChatPage = lazy(() => import("./pages/AISupportChatPage"));
+const CrisisSupportPage = lazy(() => import("./pages/CrisisSupportPage"));
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const JournalPage = lazy(() => import("./pages/JournalPage"));
+const LandingPage = lazy(() => import("./pages/PremiumLandingPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const QuickMoodCheckinPage = lazy(() => import("./pages/QuickMoodCheckinPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const SignupPage = lazy(() => import("./pages/SignupPage"));
+const StigmaSupportPage = lazy(() => import("./pages/StigmaSupportPage"));
+const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
+const ViewJournalEntryPage = lazy(() => import("./pages/ViewJournalEntryPage"));
+
+function RouteLoader() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background dark:bg-slate-950">
+      <div
+        aria-live="polite"
+        className="flex items-center gap-3 text-sm font-semibold text-primary dark:text-white"
+        role="status"
+      >
+        <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary/20 border-t-primary dark:border-white/20 dark:border-t-white" />
+        Loading GraceAI…
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const [session, setSession] = useState(null);
@@ -57,9 +71,8 @@ function App() {
 
   return (
     <>
-      <CustomCursor />
-      <WhatsAppButton />
-      <Routes>
+      <Suspense fallback={<RouteLoader />}>
+        <Routes>
         <Route element={<LandingPage />} path="/" />
       <Route
         element={
@@ -134,7 +147,8 @@ function App() {
         path="/dashboard/stigma-support"
       />
       <Route element={<Navigate replace to="/" />} path="*" />
-      </Routes>
+        </Routes>
+      </Suspense>
     </>
   );
 }

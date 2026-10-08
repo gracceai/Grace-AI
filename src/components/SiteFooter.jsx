@@ -1,48 +1,49 @@
 function SiteFooter() {
   return (
-    <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 pt-12 pb-8" id="contact">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        <div className="space-y-md">
+    <footer className="w-full border-t border-slate-200/70 bg-white pb-8 pt-14 dark:border-white/10 dark:bg-[#0d0914]" id="contact">
+      <div className="site-container grid grid-cols-1 gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-start">
+        <div>
           <div className="flex items-center gap-2">
-            <img alt="GraceAI Logo" className="h-12 md:h-14 w-auto object-contain dark:brightness-0 dark:invert" src="/logo.png" />
+            <img alt="GraceAI Logo" className="h-10 w-auto object-contain dark:brightness-0 dark:invert" src="/logo.png" />
           </div>
-          <p className="font-plus-jakarta text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-sm">
-            © 2026 GraceAI. Empowering mental resilience across Namibia. Your steady,
-            non-judgmental digital companion.
+          <p className="mt-5 max-w-md text-sm leading-7 text-slate-500 dark:text-slate-400">
+            A private, non-judgemental digital companion helping Namibians take steadier steps
+            toward emotional wellbeing.
           </p>
         </div>
-        <div className="flex flex-wrap md:justify-end gap-x-xl gap-y-md">
+        <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-8 gap-y-4 md:justify-self-end">
           <a
-            className="font-plus-jakarta text-sm font-semibold text-slate-500 hover:text-purple-700 transition-colors cursor-pointer"
+            className="text-sm font-semibold text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-white"
             href="/privacy-policy"
           >
-            Privacy Policy
+            Privacy
           </a>
           <a
-            className="font-plus-jakarta text-sm font-semibold text-slate-500 hover:text-purple-700 transition-colors cursor-pointer"
+            className="text-sm font-semibold text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-white"
             href="/terms-of-service"
           >
-            Terms of Service
+            Terms
           </a>
           <a
-            className="font-plus-jakarta text-sm font-semibold text-purple-900 dark:text-white transition-colors cursor-pointer"
+            className="text-sm font-semibold text-primary transition-colors hover:text-primary-container dark:text-white"
             href="/crisis-support"
           >
             Crisis Support
           </a>
           <a
-            className="font-plus-jakarta text-sm font-semibold text-slate-500 hover:text-purple-700 transition-colors cursor-pointer"
+            className="text-sm font-semibold text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-white"
             href="mailto:mercysomges@gmail.com"
           >
-            Contact Us
+            Contact
           </a>
-        </div>
+        </nav>
       </div>
-      <div className="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-slate-100 flex justify-center items-center">
-        <p className="text-xs text-slate-400">
-          Developed by{" "}
+      <div className="site-container mt-12 flex flex-col gap-3 border-t border-slate-100 pt-7 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between dark:border-white/10">
+        <p>© 2026 GraceAI. All rights reserved.</p>
+        <p>
+          Thoughtfully developed by{" "}
           <a
-            className="font-semibold text-slate-500 hover:text-purple-700 dark:hover:text-white transition-colors"
+            className="font-semibold text-slate-500 transition-colors hover:text-primary dark:hover:text-white"
             href="https://www.aisod.tech/"
             rel="noopener noreferrer"
             target="_blank"

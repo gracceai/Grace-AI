@@ -219,21 +219,21 @@ function QuickMoodCheckinPage({ session }) {
                 <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
                   <button 
                     onClick={() => setChartType('bar')} 
-                    className={`p-1.5 rounded-lg text-sm transition-all flex items-center gap-1 ${chartType === 'bar' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`p-1.5 rounded-lg text-sm transition-all flex items-center gap-1 ${chartType === 'bar' ? 'active-filter bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                     <span className="material-symbols-outlined text-[16px]">bar_chart</span>
                     <span className="text-[10px] font-bold uppercase tracking-tight pr-1">Bar</span>
                   </button>
                   <button 
                     onClick={() => setChartType('line')} 
-                    className={`p-1.5 rounded-lg text-sm transition-all flex items-center gap-1 ${chartType === 'line' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`p-1.5 rounded-lg text-sm transition-all flex items-center gap-1 ${chartType === 'line' ? 'active-filter bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                     <span className="material-symbols-outlined text-[16px]">show_chart</span>
                     <span className="text-[10px] font-bold uppercase tracking-tight pr-1">Line</span>
                   </button>
                   <button 
                     onClick={() => setChartType('pie')} 
-                    className={`p-1.5 rounded-lg text-sm transition-all flex items-center gap-1 ${chartType === 'pie' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`p-1.5 rounded-lg text-sm transition-all flex items-center gap-1 ${chartType === 'pie' ? 'active-filter bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                     <span className="material-symbols-outlined text-[16px]">pie_chart</span>
                     <span className="text-[10px] font-bold uppercase tracking-tight pr-1">Pie</span>
@@ -347,7 +347,7 @@ function QuickMoodCheckinPage({ session }) {
                       <div className="flex gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-slate-100/50 transition-colors group relative" key={log.id}>
                         {/* Action Buttons */}
                         {!isEditing && (
-                          <div className="absolute top-4 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute top-4 right-4 flex items-center gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                             <button 
                               onClick={() => { setEditingLogId(log.id); setEditNote(log.notes || ""); }}
                               className="p-1.5 rounded-lg bg-white text-slate-400 hover:text-primary hover:shadow-sm transition-all"

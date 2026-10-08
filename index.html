@@ -1,11 +1,29 @@
 <!doctype html>
-<html class="light" lang="en">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <link href="/favicon.jpeg" rel="icon" type="image/jpeg" />
-    <title>GraceAI</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta
+      content="Private, culturally aware mental wellness support for Namibia."
+      name="description"
+    />
+    <meta content="#10071d" name="theme-color" />
+    <link href="/favicon.png" rel="icon" type="image/png" />
+    <title>GraceAI — Your steady digital companion</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark" || (!savedTheme && prefersDark)
+        );
+      } catch {
+        // The app will apply the theme after it loads.
+      }
+    </script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
       rel="stylesheet"
@@ -14,7 +32,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
       rel="stylesheet"
     />
-    <script>
+    <script id="tailwind-theme-reference" type="application/json">
       tailwind.config = {
         darkMode: "class",
         theme: {

@@ -254,13 +254,13 @@ function JournalPage({ session }) {
               <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl w-full sm:w-auto self-end md:self-auto">
                 <button 
                   onClick={() => setJournalFilter('all')}
-                  className={`flex-1 sm:px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journalFilter === 'all' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`flex-1 sm:px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journalFilter === 'all' ? 'active-filter bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   All ({entries.length})
                 </button>
                 <button 
                   onClick={() => setJournalFilter('archived')}
-                  className={`flex-1 sm:px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journalFilter === 'archived' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`flex-1 sm:px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journalFilter === 'archived' ? 'active-filter bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   Archived ({entries.filter(e => e.is_archived).length})
                 </button>
@@ -310,7 +310,7 @@ function JournalPage({ session }) {
                       <p className="text-sm text-on-surface-variant leading-relaxed mb-6 line-clamp-3">{entry.content}</p>
                     </Link>
                     
-                    <div className="flex gap-4 px-6 pb-4 pt-2 border-t border-slate-200/60 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex gap-4 px-6 pb-4 pt-2 border-t border-slate-200/60 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                       <Link 
                         className="text-[10px] font-bold uppercase tracking-wider text-primary hover:underline cursor-pointer"
                         to={`/dashboard/journal/${entry.id}`}
