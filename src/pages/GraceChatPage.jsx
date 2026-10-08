@@ -22,23 +22,45 @@ function greeting() {
   return "Good evening";
 }
 
+const MAX_STORED_MESSAGES = 300;
+
 function loadChat() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { messages: [], crisis: false };
+    if (!raw) return [];
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return { messages: parsed.filter(isMessage), crisis: false };
-    return {
-      messages: Array.isArray(parsed.messages) ? parsed.messages.filter(isMessage) : [],
-      crisis: Boolean(parsed.crisis),
-    };
+    const list = Array.isArray(parsed) ? parsed : parsed.messages;
+    return Array.isArray(list) ? list.filter(isMessage) : [];
   } catch {
-    return { messages: [], crisis: false };
+    return [];
+  }
+}
+
+function saveChat(messages) {
+  let kept = messages
+    .slice(-MAX_STORED_MESSAGES)
+    .map(({ id, role, text, support }) => (support ? { id, role, text, support } : { id, role, text }));
+
+  while (true) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: 2, messages: kept }));
+      return true;
+    } catch {
+      if (kept.length <= 10) return false;
+      kept = kept.slice(Math.floor(kept.length / 2));
+    }
   }
 }
 
 function isMessage(message) {
   return message && (message.role === "user" || message.role === "grace") && typeof message.text === "string";
+}
+
+function latestSupportId(messages) {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    if (messages[index].role === "grace" && messages[index].support) return messages[index].id;
+  }
+  return null;
 }
 
 function makeId() {
@@ -64,8 +86,7 @@ function GraceChatPage() {
   const inputId = useId();
   const stageRef = useRef(null);
   const stored = useRef(loadChat());
-  const [messages, setMessages] = useState(stored.current.messages);
-  const [crisis, setCrisis] = useState(stored.current.crisis);
+  const [messages, setMessages] = useState(stored.current);
   const [draft, setDraft] = useState("");
   const [thinking, setThinking] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -119,8 +140,14 @@ function GraceChatPage() {
   }, [menuOpen]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages, crisis }));
-  }, [messages, crisis]);
+    const timer = window.setTimeout(() => saveChat(messages), 250);
+    const flush = () => saveChat(messagesRef.current);
+    window.addEventListener("pagehide", flush);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("pagehide", flush);
+    };
+  }, [messages]);
 
   useEffect(() => {
     if (stickToBottom.current) scrollToLatest();
@@ -181,7 +208,7 @@ function GraceChatPage() {
       const result = await createGraceReply(history);
       if (cancelled()) return;
       if (!result.text?.trim()) throw new Error("empty");
-      if (result.crisis) setCrisis(true);
+      const support = Boolean(result.support);
 
       const userId = [...history].reverse().find((message) => message.role === "user")?.id ?? makeId();
       const id = `reply-${userId}`;
@@ -197,7 +224,7 @@ function GraceChatPage() {
                 message.id === id ? { ...message, text: partial } : message
               );
             }
-            return [...current, { id, role: "grace", text: partial }];
+            return [...current, support ? { id, role: "grace", text: partial, support } : { id, role: "grace", text: partial }];
           });
         },
         cancelled
@@ -240,13 +267,12 @@ function GraceChatPage() {
   const clearChat = () => {
     generation.current += 1;
     setMessages([]);
-    setCrisis(false);
     setDraft("");
     setThinking(false);
     setBusy(false);
     setConfirmClear(false);
     setMenuOpen(false);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages: [], crisis: false }));
+    localStorage.removeItem(STORAGE_KEY);
     inputRef.current?.focus();
   };
 
@@ -266,6 +292,7 @@ function GraceChatPage() {
 
   const started = messages.length > 0;
   const thread = [{ id: "welcome", role: "grace", text: WELCOME }, ...messages];
+  const supportId = latestSupportId(messages);
 
   return (
     <div
@@ -383,7 +410,7 @@ function GraceChatPage() {
                       </MenuItem>
                     </div>
                     <p className="mt-1 border-t border-slate-100 px-3 pb-1 pt-2.5 text-[11px] leading-5 text-slate-500 dark:border-white/10 dark:text-slate-400">
-                      No account needed. This conversation stays on this device.
+                      No account needed. This conversation is saved only on this device and picks up where you left off.
                     </p>
                   </>
                 )}
@@ -414,7 +441,10 @@ function GraceChatPage() {
                       {message.role === "user" ? (
                         <UserBubble last={lastInGroup} text={message.text} />
                       ) : (
-                        <GraceBubble last={lastInGroup && !(thinking && !next)} text={message.text} />
+                        <>
+                          <GraceBubble last={lastInGroup && !(thinking && !next)} text={message.text} />
+                          {message.id === supportId && <SupportContacts />}
+                        </>
                       )}
                     </div>
                   );
@@ -477,43 +507,6 @@ function GraceChatPage() {
         </div>
 
         <div className="px-3 sm:px-6">
-          {crisis && (
-            <div
-              className="grace-rise mb-2 rounded-2xl border border-red-200/80 bg-[#fff5f5] p-2 pl-3.5 text-left dark:border-red-400/20 dark:bg-red-950/40"
-              role="alert"
-            >
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px] text-red-600 dark:text-red-300">favorite</span>
-                <p className="min-w-0 flex-1 text-[13px] font-semibold text-red-800 dark:text-red-200">
-                  Help is available right now
-                </p>
-                <button
-                  aria-label="Hide help options"
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-red-700/70 transition hover:bg-red-100 dark:text-red-200/70 dark:hover:bg-white/10"
-                  onClick={() => setCrisis(false)}
-                  type="button"
-                >
-                  <span className="material-symbols-outlined text-[18px]">close</span>
-                </button>
-              </div>
-              <div className="mt-1.5 flex gap-2 pr-1.5">
-                <a
-                  className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-red-600 px-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700"
-                  href="tel:10111"
-                >
-                  <span className="material-symbols-outlined text-[18px]">call</span>
-                  Call 10111
-                </a>
-                <Link
-                  className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-red-200 bg-[#ffffff] px-3 text-sm font-bold text-red-700 transition hover:bg-red-50 dark:border-red-400/20 dark:bg-transparent dark:text-red-200 dark:hover:bg-white/5"
-                  to="/crisis-support"
-                >
-                  More support
-                </Link>
-              </div>
-            </div>
-          )}
-
           <form
             className="grace-composer pb-[max(0.75rem,env(safe-area-inset-bottom))]"
             onSubmit={(event) => {
@@ -605,6 +598,33 @@ function UserBubble({ text, last }) {
       >
         {text}
       </p>
+    </div>
+  );
+}
+
+function SupportContacts() {
+  return (
+    <div className="grace-rise ml-[2.375rem] mt-2 max-w-[min(82%,36rem)] rounded-2xl border border-rose-200/80 bg-[#fff7f8] p-3 text-left dark:border-rose-300/15 dark:bg-rose-950/30">
+      <p className="flex items-center gap-1.5 text-xs font-semibold text-rose-900 dark:text-rose-100">
+        <span className="material-symbols-outlined text-[16px] text-rose-500 dark:text-rose-300">favorite</span>
+        If you ever want a person with you right now
+      </p>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <a
+          className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-full bg-rose-600 px-3 text-sm font-bold text-white transition hover:bg-rose-700"
+          href="tel:10111"
+        >
+          <span className="material-symbols-outlined text-[17px]">call</span>
+          10111
+        </a>
+        <Link
+          className="inline-flex min-h-10 items-center justify-center rounded-full border border-rose-200 bg-[#ffffff] px-3 text-sm font-bold text-rose-700 transition hover:bg-rose-50 dark:border-rose-300/20 dark:bg-transparent dark:text-rose-100 dark:hover:bg-white/5"
+          to="/crisis-support"
+        >
+          More support
+        </Link>
+      </div>
+      <p className="mt-2 text-[11px] leading-4 text-rose-900/60 dark:text-rose-100/50">10111 is Namibia's emergency services line.</p>
     </div>
   );
 }

@@ -41,22 +41,26 @@ Keep each reply to 2 to 4 short sentences. Go longer only if they directly ask y
 - Never give instructions for self-harm, violence, weapons, drugs, or anything illegal.
 - If asked whether you are real, human, or AI, say honestly that you are Grace, a digital companion, and that you can still listen carefully.
 - If asked about something unrelated to wellbeing (homework, code, trivia), kindly say this space is for talking about how they are doing, and invite them back to that.
-- Do not invent facts, phone numbers, services, or addresses. The only emergency number you give is 10111.
+- Do not invent facts, phone numbers, services, or addresses.
 
-# Safety comes first
-If the person says or strongly hints that they may hurt themselves or someone else, are being hurt, or are in immediate danger:
-- Respond to them as a person, in your own words, using what they actually said. Never sound like a script.
-- Thank them for telling you, and take it seriously without panic or judgement.
-- Say honestly that you cannot keep them safe in an emergency, and that they deserve real help right now.
-- Ask them to call 10111 (Namibia emergency services) or go to the nearest hospital or clinic, and to reach someone they trust and not be alone.
-- Ask one direct, caring question about their safety, for example whether they are safe right now, or whether someone can be with them.
-- Do not explore methods, plans, or details. Do not lecture, and do not continue as if it were an ordinary chat.
+# When death, dying, or harm comes up
+This includes wanting to die, thoughts of suicide or self-harm, harming someone else, being hurt by someone, losing someone, or fear of death.
 
-After that, stay with them. Keep checking on their safety in later replies, encourage them to reach a real person, and only gently return to other topics once they say they are safe. If they say they are safe, say you are glad and keep listening. If they say they are not safe or are alone, keep urging 10111 and a trusted person, calmly and briefly.
+Your job here is to walk with the person, not to hand them off.
+- Slow down. Stay with them, reply to what they actually said, in your own words. Never sound like a script or a warning label.
+- Thank them for telling you, and take it seriously without panic, judgement, or lecturing.
+- Try to understand. Gently ask what has been happening, what led them here, how long they have felt this way, and what they are carrying. One question at a time.
+- It is caring to ask directly and calmly whether they are thinking about ending their life. Asking does not put the idea there.
+- Gently notice who is around them and whether they are on their own, as part of understanding, not as an instruction.
+- Do not tell them to call a number, go to a hospital, or contact anyone. Do not recite phone numbers. The app already shows emergency contacts right beside your reply, so they are there whenever the person wants them.
+- Never describe, discuss, or compare methods, means, or plans, and never give any information that could be used to cause harm.
+- Only if they say they are in danger right now (acting on it, or about to), stay calm and warm, stay with them, and gently let them know the call button just below your message reaches a person straight away.
 
-If the risk is unclear (for example "I can't do this anymore"), gently and directly ask whether they are thinking about hurting themselves, then follow the steps above if they say yes.
+Keep walking with them in later replies. Keep listening, keep gently checking in on how they are doing, and do not suddenly switch back to ordinary small talk. If they say they are safe, say you are glad and keep listening.
 
-Whenever your reply is responding to possible risk of harm, start it with the exact tag [SAFETY]. The app hides the tag and shows emergency options. Never use it otherwise.
+If something is unclear (for example "I can't do this anymore"), gently and directly ask what they mean, including whether they are thinking about ending their life.
+
+Whenever your reply touches on death, dying, or harm, start it with the exact tag [SAFETY]. The app hides the tag and shows the emergency contacts beside your reply. Never use it otherwise.
 
 # Examples of your voice
 Person: work is just too much right now
@@ -68,25 +72,28 @@ Grace: Lying awake with a busy mind is exhausting. If it feels okay, try breathi
 const SAFETY_TAG = /\[SAFETY\]\s*/gi;
 
 const SAFETY_MODE = `# Right now
-The person's latest message suggests they may be at risk of harm. Respond in safety mode as described above, in your own words and to what they actually said. Start with [SAFETY]. Keep it to 3 to 5 short sentences, include 10111, and end by asking whether they are safe right now or whether someone can be with them.`;
+The person's latest message touches on death, dying, or harm. Walk with them as described above, in your own words and to what they actually said. Start with [SAFETY]. Keep it to 3 to 5 short sentences. Do not tell them to call anyone or recite numbers. End with one gentle question that helps you understand them better.`;
 
 const CRISIS_REPLIES = [
-  "I am really glad you told me, and I am taking it seriously. I cannot keep you safe in an emergency, and you deserve someone who can be with you right now. Please call 10111 or go to the nearest hospital, and reach out to someone you trust. Are you safe at this moment?",
-  "Thank you for telling me something this heavy. You do not have to carry it alone, and right now you deserve real help, not just a chat. Please call 10111 or get to the nearest hospital or clinic, and let someone near you know what is happening. Is anyone with you right now?",
-  "I hear how much pain you are in, and I am glad you said it out loud. I am a digital companion, so I cannot keep you safe in an emergency. Please call 10111 now or go to the nearest hospital, and try not to be alone. Can you tell me if you are safe right now?",
+  "I am really glad you told me, and I am taking it seriously. That sounds like so much pain to be carrying. I am here, and I want to understand. What has been happening that brought you to this point?",
+  "Thank you for trusting me with something this heavy. You do not have to say it perfectly. Are you thinking about ending your life, or is it more that you want the pain to stop?",
+  "I hear you, and I am not going anywhere. You do not have to carry this on your own right now. When did these thoughts start to feel this strong?",
 ];
 
 const CRISIS_FOLLOWUPS = [
-  "I am still here with you. Your safety matters most right now. If you are in danger, please call 10111 or go to the nearest hospital. Is there someone you can call or sit with right now?",
-  "Thank you for staying with me. Please do not go through this alone tonight. A friend, family member, neighbour, or 10111 can be with you in a way I cannot. Who could you reach out to right now?",
-  "I am not going anywhere. You reached out, and that matters. Please call 10111 if you feel you might act on these thoughts. Are you somewhere safe at the moment?",
+  "I am still here with you. Take your time. What does tonight feel like for you?",
+  "Thank you for staying with me. Is anyone close by right now, or are you on your own?",
+  "That makes sense, given everything you are holding. What has been the hardest part to carry?",
+  "I am listening. What would you want someone to really understand about how this feels?",
 ];
 
 const SAFE_NOW = /\b(i'?m|i am|im) (safe|okay|ok|alright|fine|not going to|won'?t)\b|\b(yes,? i'?m safe|i'?m with (someone|my|a friend|family))\b/i;
-const NOT_SAFE = /\b(not safe|no one|nobody|alone|by myself|can'?t stop|i will|i'?m going to|tonight)\b/i;
 
 const CRISIS_PATTERN =
   /\b(suicid\w*|self[-\s]?harm\w*|kill myself|killing myself|end my life|take my life|want to die|wants to die|wanna die|hurt myself|harm myself|better off dead|don'?t want to (live|be here|wake up)|do not want to (live|be here)|going to kill (him|her|them|someone)|want to kill (him|her|them|someone))\b/i;
+
+const DEATH_PATTERN =
+  /\b(die|dies|died|dying|death|deaths|dead|deceased|passed away|pass away|passing|funeral|burial|grave|suicid\w*|kill(ed|ing|s)?|murder\w*|overdose\w*|end it all|not wake up)\b/i;
 
 const THEMES = [
   ["grief", /\b(died|death|passed away|funeral|grieving|grief|lost (my|our) (mum|mom|dad|mother|father|friend|partner|child))\b/i],
@@ -238,6 +245,10 @@ export function isCrisisMessage(text) {
   return CRISIS_PATTERN.test(text ?? "");
 }
 
+export function mentionsDeath(text) {
+  return isCrisisMessage(text) || DEATH_PATTERN.test(text ?? "");
+}
+
 function recentRisk(history) {
   const users = history.filter((message) => message.role === "user").slice(-3);
   return users.some((message) => isCrisisMessage(message.text));
@@ -269,7 +280,11 @@ function localReply(history) {
         crisis: false,
       };
     }
-    return { text: choose(CRISIS_FOLLOWUPS), crisis: NOT_SAFE.test(latest) };
+    return { text: choose(CRISIS_FOLLOWUPS), crisis: true };
+  }
+
+  if (DEATH_PATTERN.test(latest) && detectTheme(latest) !== "grief") {
+    return { text: choose(CRISIS_REPLIES), crisis: true };
   }
 
   if (/^(hi|hey|hello|hiya|good morning|good afternoon|good evening)\b[.!]*$/i.test(latest)) {
@@ -431,30 +446,36 @@ async function replyWithGemini(history, system) {
   return result.response.text();
 }
 
-function readModelReply(raw, flagged) {
+function readModelReply(raw) {
   const tagged = SAFETY_TAG.test(raw ?? "");
   SAFETY_TAG.lastIndex = 0;
   const text = toBubble((raw ?? "").replace(SAFETY_TAG, ""));
   if (!text) throw new Error("empty");
-  if (flagged && !/10111/.test(text)) throw new Error("unsafe");
-  return { text, crisis: flagged || tagged };
+  return { text, tagged };
+}
+
+async function modelReply(history, system) {
+  if (geminiApiKey) return readModelReply(await replyWithGemini(history, system));
+  if (openAiKey) return readModelReply(await replyWithChatModel(history, system));
+  return null;
 }
 
 export async function createGraceReply(history) {
   const latest = [...history].reverse().find((message) => message.role === "user")?.text ?? "";
-  const flagged = isCrisisMessage(latest);
+  const flagged = mentionsDeath(latest) || recentRisk(history);
   const system = flagged ? `${SYSTEM_PROMPT}\n\n${SAFETY_MODE}` : SYSTEM_PROMPT;
 
+  let reply = null;
   try {
-    if (geminiApiKey) {
-      return readModelReply(await replyWithGemini(history, system), flagged);
-    }
-    if (openAiKey) {
-      return readModelReply(await replyWithChatModel(history, system), flagged);
-    }
+    reply = await modelReply(history, system);
   } catch {
     // A missed connection should still leave the person with a real reply.
   }
 
-  return localReply(history);
+  if (reply) {
+    return { text: reply.text, support: flagged || reply.tagged || mentionsDeath(reply.text) };
+  }
+
+  const local = localReply(history);
+  return { text: local.text, support: flagged || local.crisis || mentionsDeath(local.text) };
 }
