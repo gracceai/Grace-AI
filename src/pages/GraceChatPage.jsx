@@ -478,19 +478,37 @@ function GraceChatPage() {
 
         <div className="px-3 sm:px-6">
           {crisis && (
-            <div className="mb-2 flex gap-3 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-left">
-              <span className="material-symbols-outlined mt-0.5 text-[20px] text-red-600">emergency</span>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-red-700">If you are in danger, get help now</p>
-                <p className="mt-0.5 text-xs leading-5 text-red-700">
-                  In Namibia, call{" "}
-                  <a className="font-bold underline" href="tel:10111">
-                    10111
-                  </a>{" "}
-                  or go to the nearest hospital. Stay with someone you trust if you can.
+            <div
+              className="grace-rise mb-2 rounded-2xl border border-red-200/80 bg-[#fff5f5] p-2 pl-3.5 text-left dark:border-red-400/20 dark:bg-red-950/40"
+              role="alert"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-red-600 dark:text-red-300">favorite</span>
+                <p className="min-w-0 flex-1 text-[13px] font-semibold text-red-800 dark:text-red-200">
+                  Help is available right now
                 </p>
-                <Link className="mt-1.5 inline-flex text-xs font-bold text-red-700 underline" to="/crisis-support">
-                  Open crisis support
+                <button
+                  aria-label="Hide help options"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-red-700/70 transition hover:bg-red-100 dark:text-red-200/70 dark:hover:bg-white/10"
+                  onClick={() => setCrisis(false)}
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              </div>
+              <div className="mt-1.5 flex gap-2 pr-1.5">
+                <a
+                  className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-red-600 px-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700"
+                  href="tel:10111"
+                >
+                  <span className="material-symbols-outlined text-[18px]">call</span>
+                  Call 10111
+                </a>
+                <Link
+                  className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-red-200 bg-[#ffffff] px-3 text-sm font-bold text-red-700 transition hover:bg-red-50 dark:border-red-400/20 dark:bg-transparent dark:text-red-200 dark:hover:bg-white/5"
+                  to="/crisis-support"
+                >
+                  More support
                 </Link>
               </div>
             </div>

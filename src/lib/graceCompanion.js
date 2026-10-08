@@ -32,6 +32,7 @@ Keep each reply to 2 to 4 short sentences. Go longer only if they directly ask y
 
 # Formatting
 - Plain sentences only. No markdown, headings, bullet points, numbered lists, bold text, or emojis. Your reply is shown as a single chat bubble.
+- Never use dashes of any kind (—, –, or " - ") to join or break up sentences. Use a full stop or a comma instead. Ordinary hyphenated words like "self-care" are fine.
 - Do not sign off with your name or repeat a disclaimer every message.
 
 # Boundaries
@@ -44,12 +45,18 @@ Keep each reply to 2 to 4 short sentences. Go longer only if they directly ask y
 
 # Safety comes first
 If the person says or strongly hints that they may hurt themselves or someone else, are being hurt, or are in immediate danger:
-- Stop the usual conversation and do not explore methods, plans, or details.
-- Say clearly and kindly that you are glad they told you, and that you cannot keep them safe in an emergency.
-- Ask them to contact emergency services now (in Namibia, call 10111) or go to the nearest hospital or clinic, and to be with someone they trust right now.
-- Stay warm and brief. Do not lecture, and do not continue as if it were an ordinary chat.
+- Respond to them as a person, in your own words, using what they actually said. Never sound like a script.
+- Thank them for telling you, and take it seriously without panic or judgement.
+- Say honestly that you cannot keep them safe in an emergency, and that they deserve real help right now.
+- Ask them to call 10111 (Namibia emergency services) or go to the nearest hospital or clinic, and to reach someone they trust and not be alone.
+- Ask one direct, caring question about their safety, for example whether they are safe right now, or whether someone can be with them.
+- Do not explore methods, plans, or details. Do not lecture, and do not continue as if it were an ordinary chat.
+
+After that, stay with them. Keep checking on their safety in later replies, encourage them to reach a real person, and only gently return to other topics once they say they are safe. If they say they are safe, say you are glad and keep listening. If they say they are not safe or are alone, keep urging 10111 and a trusted person, calmly and briefly.
 
 If the risk is unclear (for example "I can't do this anymore"), gently and directly ask whether they are thinking about hurting themselves, then follow the steps above if they say yes.
+
+Whenever your reply is responding to possible risk of harm, start it with the exact tag [SAFETY]. The app hides the tag and shows emergency options. Never use it otherwise.
 
 # Examples of your voice
 Person: work is just too much right now
@@ -58,8 +65,25 @@ Grace: That sounds like a lot to carry, especially when it keeps coming. You do 
 Person: I can't sleep, my mind won't stop
 Grace: Lying awake with a busy mind is exhausting. If it feels okay, try breathing out a little longer than you breathe in, a few times. What thought keeps coming back?`;
 
-const CRISIS_REPLY =
-  "I am really glad you told me. I cannot keep you safe in an emergency, and you deserve someone who can. Please contact local emergency services now — in Namibia you can call 10111 — or go to the nearest hospital, and stay with a person you trust if you can.";
+const SAFETY_TAG = /\[SAFETY\]\s*/gi;
+
+const SAFETY_MODE = `# Right now
+The person's latest message suggests they may be at risk of harm. Respond in safety mode as described above, in your own words and to what they actually said. Start with [SAFETY]. Keep it to 3 to 5 short sentences, include 10111, and end by asking whether they are safe right now or whether someone can be with them.`;
+
+const CRISIS_REPLIES = [
+  "I am really glad you told me, and I am taking it seriously. I cannot keep you safe in an emergency, and you deserve someone who can be with you right now. Please call 10111 or go to the nearest hospital, and reach out to someone you trust. Are you safe at this moment?",
+  "Thank you for telling me something this heavy. You do not have to carry it alone, and right now you deserve real help, not just a chat. Please call 10111 or get to the nearest hospital or clinic, and let someone near you know what is happening. Is anyone with you right now?",
+  "I hear how much pain you are in, and I am glad you said it out loud. I am a digital companion, so I cannot keep you safe in an emergency. Please call 10111 now or go to the nearest hospital, and try not to be alone. Can you tell me if you are safe right now?",
+];
+
+const CRISIS_FOLLOWUPS = [
+  "I am still here with you. Your safety matters most right now. If you are in danger, please call 10111 or go to the nearest hospital. Is there someone you can call or sit with right now?",
+  "Thank you for staying with me. Please do not go through this alone tonight. A friend, family member, neighbour, or 10111 can be with you in a way I cannot. Who could you reach out to right now?",
+  "I am not going anywhere. You reached out, and that matters. Please call 10111 if you feel you might act on these thoughts. Are you somewhere safe at the moment?",
+];
+
+const SAFE_NOW = /\b(i'?m|i am|im) (safe|okay|ok|alright|fine|not going to|won'?t)\b|\b(yes,? i'?m safe|i'?m with (someone|my|a friend|family))\b/i;
+const NOT_SAFE = /\b(not safe|no one|nobody|alone|by myself|can'?t stop|i will|i'?m going to|tonight)\b/i;
 
 const CRISIS_PATTERN =
   /\b(suicid\w*|self[-\s]?harm\w*|kill myself|killing myself|end my life|take my life|want to die|wants to die|wanna die|hurt myself|harm myself|better off dead|don'?t want to (live|be here|wake up)|do not want to (live|be here)|going to kill (him|her|them|someone)|want to kill (him|her|them|someone))\b/i;
@@ -90,7 +114,7 @@ const OPENERS = {
     "Sleep can slip away when the day has not had anywhere to land. What is still sitting with you from today?",
   ],
   anxiety: [
-    "Anxiety can make a quiet room feel urgent. You can talk at whatever pace you have. Where do you notice it most right now — thoughts, chest, or stomach?",
+    "Anxiety can make a quiet room feel urgent. You can talk at whatever pace you have. Where do you notice it most right now: thoughts, chest, or stomach?",
     "Thank you for saying it plainly. Worry gets louder when it has nowhere to go. What is the worry circling at the moment?",
     "Feeling on edge is exhausting, even if nothing around you looks like an emergency. What happened just before this feeling got stronger?",
   ],
@@ -144,7 +168,7 @@ const OPENERS = {
 const FOLLOWUPS = {
   grief: [
     "I am still with you in this. Grief often comes in waves rather than a straight line. What is the wave like at this moment?",
-    "You can tell me the ordinary details too — the room, the time of day, the thing you keep remembering. What is close to the surface?",
+    "You can tell me the ordinary details too, like the room, the time of day, or the thing you keep remembering. What is close to the surface?",
     "There is no right way to miss someone. What would feel like care for you in the next hour?",
   ],
   sleep: [
@@ -214,6 +238,11 @@ export function isCrisisMessage(text) {
   return CRISIS_PATTERN.test(text ?? "");
 }
 
+function recentRisk(history) {
+  const users = history.filter((message) => message.role === "user").slice(-3);
+  return users.some((message) => isCrisisMessage(message.text));
+}
+
 function detectTheme(text) {
   const found = THEMES.find(([, pattern]) => pattern.test(text));
   return found ? found[0] : "general";
@@ -227,9 +256,20 @@ function localReply(history) {
   const users = history.filter((message) => message.role === "user");
   const latest = users.at(-1)?.text?.replace(/\s+/g, " ").trim() ?? "";
   const previous = users.at(-2)?.text ?? "";
+  const earlierRisk = recentRisk(history.slice(0, -1));
 
   if (isCrisisMessage(latest)) {
-    return { text: CRISIS_REPLY, crisis: true };
+    return { text: choose(earlierRisk ? CRISIS_FOLLOWUPS : CRISIS_REPLIES), crisis: true };
+  }
+
+  if (earlierRisk) {
+    if (SAFE_NOW.test(latest)) {
+      return {
+        text: "I am really glad you are safe right now. Thank you for telling me. We can keep talking at your pace. What has been making things feel this heavy?",
+        crisis: false,
+      };
+    }
+    return { text: choose(CRISIS_FOLLOWUPS), crisis: NOT_SAFE.test(latest) };
   }
 
   if (/^(hi|hey|hello|hiya|good morning|good afternoon|good evening)\b[.!]*$/i.test(latest)) {
@@ -298,7 +338,13 @@ function toBubble(text) {
     .replace(/^#{1,6}\s+/gm, "")
     .replace(/\*\*(.*?)\*\*/g, "$1")
     .replace(/\*(.*?)\*/g, "$1")
-    .replace(/^\s*[-*]\s+/gm, "")
+    .replace(/^\s*[-*•]\s+/gm, "")
+    .replace(/\s*[—–―]\s*(?=[.!?,;:]|$)/gm, "")
+    .replace(/(\S)\s*[—–―]\s*(\S)/g, "$1, $2")
+    .replace(/(\S)\s+-{1,2}\s+(\S)/g, "$1, $2")
+    .replace(/[—–―]/g, "")
+    .replace(/,\s*,/g, ",")
+    .replace(/,(\s*[.!?])/g, "$1")
     .replace(/\n{2,}/g, "\n")
     .replace(/\s+\n/g, "\n")
     .trim();
@@ -345,14 +391,14 @@ async function requestChat(url, body) {
   return response.json();
 }
 
-async function replyWithChatModel(history) {
+async function replyWithChatModel(history, system) {
   const body = JSON.stringify({
     model: openAiModel,
     temperature: 0.7,
     max_tokens: 400,
     reasoning_effort: "low",
     stream: false,
-    messages: [{ role: "system", content: SYSTEM_PROMPT }, ...toModelMessages(history)],
+    messages: [{ role: "system", content: system }, ...toModelMessages(history)],
   });
 
   let data;
@@ -363,16 +409,14 @@ async function replyWithChatModel(history) {
     data = await requestChat(OLLAMA_PROXY_URL, body);
   }
 
-  const text = toBubble(messageText(data?.choices?.[0]?.message?.content));
-  if (!text) throw new Error("empty");
-  return text;
+  return messageText(data?.choices?.[0]?.message?.content);
 }
 
-async function replyWithGemini(history) {
+async function replyWithGemini(history, system) {
   const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const model = new GoogleGenerativeAI(geminiApiKey).getGenerativeModel({
     model: "gemini-2.0-flash",
-    systemInstruction: SYSTEM_PROMPT,
+    systemInstruction: system,
   });
   const messages = toModelMessages(history);
   const latest = messages.at(-1)?.content ?? "";
@@ -384,23 +428,29 @@ async function replyWithGemini(history) {
     model.startChat({ history: prior }).sendMessage(latest),
     8000
   );
-  const text = toBubble(result.response.text());
+  return result.response.text();
+}
+
+function readModelReply(raw, flagged) {
+  const tagged = SAFETY_TAG.test(raw ?? "");
+  SAFETY_TAG.lastIndex = 0;
+  const text = toBubble((raw ?? "").replace(SAFETY_TAG, ""));
   if (!text) throw new Error("empty");
-  return text;
+  if (flagged && !/10111/.test(text)) throw new Error("unsafe");
+  return { text, crisis: flagged || tagged };
 }
 
 export async function createGraceReply(history) {
   const latest = [...history].reverse().find((message) => message.role === "user")?.text ?? "";
-  if (isCrisisMessage(latest)) {
-    return { text: CRISIS_REPLY, crisis: true };
-  }
+  const flagged = isCrisisMessage(latest);
+  const system = flagged ? `${SYSTEM_PROMPT}\n\n${SAFETY_MODE}` : SYSTEM_PROMPT;
 
   try {
     if (geminiApiKey) {
-      return { text: await replyWithGemini(history), crisis: false };
+      return readModelReply(await replyWithGemini(history, system), flagged);
     }
     if (openAiKey) {
-      return { text: await replyWithChatModel(history), crisis: false };
+      return readModelReply(await replyWithChatModel(history, system), flagged);
     }
   } catch {
     // A missed connection should still leave the person with a real reply.
