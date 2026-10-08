@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import HeroStarfield from "../components/HeroStarfield";
 import SiteFooter from "../components/SiteFooter";
 import SiteHeader from "../components/SiteHeader";
 import TypingChatCard from "../components/TypingChatCard";
 
-const whatsappUrl = "https://wa.me/264836796445";
 const specialistUrl =
   "mailto:mercysomges@gmail.com?subject=Talk%20to%20a%20Specialist%20-%20GraceAI";
 
@@ -55,6 +54,16 @@ const privacyPoints = [
 
 function PremiumLandingPage() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const tryGraceAI = () => {
+    const appUrl = import.meta.env.VITE_GRACEAI_APP_URL?.trim();
+    if (appUrl) {
+      window.location.assign(appUrl);
+      return;
+    }
+    navigate("/dashboard/ai-support-chat");
+  };
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -90,7 +99,7 @@ function PremiumLandingPage() {
             <div className="max-w-2xl">
               <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold text-white/90 backdrop-blur-md">
                 <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.9)]" />
-                Support that meets you where you are
+                Now live — built for Namibia
               </div>
               <h1 className="max-w-[720px] font-plus-jakarta text-[38px] font-bold leading-[1.06] tracking-[-0.045em] text-white sm:text-5xl lg:text-[64px]">
                 A calmer mind starts with a safe place to talk.
@@ -101,15 +110,14 @@ function PremiumLandingPage() {
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
+                <button
                   className="hero-primary-button min-w-[190px] shadow-black/20"
-                  href={whatsappUrl}
-                  rel="noreferrer"
-                  target="_blank"
+                  onClick={tryGraceAI}
+                  type="button"
                 >
-                  Start a conversation
+                  Try GraceAI now
                   <span className="material-symbols-outlined text-[19px]">arrow_outward</span>
-                </a>
+                </button>
                 <button
                   className="secondary-button min-w-[160px] border-white/20 bg-white/10 text-white backdrop-blur-md hover:border-white/30 hover:bg-white/15"
                   onClick={() => scrollToSection("features")}
@@ -304,10 +312,10 @@ function PremiumLandingPage() {
               support.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-              <a className="primary-button min-w-[190px]" href={whatsappUrl} rel="noreferrer" target="_blank">
-                Chat with GraceAI
+              <button className="primary-button min-w-[190px]" onClick={tryGraceAI} type="button">
+                Try GraceAI now
                 <span className="material-symbols-outlined text-[19px]">arrow_outward</span>
-              </a>
+              </button>
               <a className="secondary-button min-w-[190px]" href={specialistUrl}>
                 Talk to a specialist
               </a>

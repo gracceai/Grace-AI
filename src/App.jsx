@@ -11,12 +11,18 @@ const JournalPage = lazy(() => import("./pages/JournalPage"));
 const LandingPage = lazy(() => import("./pages/PremiumLandingPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const QRLaunchPage = lazy(() => import("./pages/QRLaunchPage"));
 const QuickMoodCheckinPage = lazy(() => import("./pages/QuickMoodCheckinPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
 const StigmaSupportPage = lazy(() => import("./pages/StigmaSupportPage"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
 const ViewJournalEntryPage = lazy(() => import("./pages/ViewJournalEntryPage"));
+
+function RootEntryPage() {
+  const hasAppDestination = Boolean(import.meta.env.VITE_GRACEAI_APP_URL?.trim());
+  return hasAppDestination ? <QRLaunchPage /> : <LandingPage />;
+}
 
 function RouteLoader() {
   return (
@@ -73,7 +79,8 @@ function App() {
     <>
       <Suspense fallback={<RouteLoader />}>
         <Routes>
-        <Route element={<LandingPage />} path="/" />
+        <Route element={<RootEntryPage />} path="/" />
+      <Route element={<QRLaunchPage />} path="/launch" />
       <Route
         element={
           <AuthRoute mode="guest" session={session}>

@@ -122,6 +122,15 @@ function SiteHeader() {
     navigate("/");
   };
 
+  const tryGraceAI = () => {
+    const appUrl = import.meta.env.VITE_GRACEAI_APP_URL?.trim();
+    if (appUrl) {
+      window.location.assign(appUrl);
+      return;
+    }
+    navigate("/dashboard/ai-support-chat");
+  };
+
   return (
     <>
       <header
@@ -234,16 +243,15 @@ function SiteHeader() {
                 >
                   Login
                 </button>
-                <a
+                <button
                   className={`hidden min-h-11 items-center rounded-full px-5 text-sm font-bold shadow-lg transition lg:inline-flex ${
                     overHero ? "hero-primary-button" : "bg-primary text-white hover:bg-primary-container"
                   }`}
-                  href="https://wa.me/264836796445"
-                  rel="noreferrer"
-                  target="_blank"
+                  onClick={tryGraceAI}
+                  type="button"
                 >
-                  Chat with GraceAI
-                </a>
+                  Try GraceAI
+                </button>
               </>
             )}
 
@@ -317,9 +325,9 @@ function SiteHeader() {
                   >
                     Login
                   </button>
-                  <a className="primary-button mt-1" href="https://wa.me/264836796445" rel="noreferrer" target="_blank">
-                    Chat with GraceAI
-                  </a>
+                  <button className="primary-button mt-1" onClick={tryGraceAI} type="button">
+                    Try GraceAI
+                  </button>
                 </>
               )}
               {user && (

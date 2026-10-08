@@ -441,6 +441,10 @@ body {
   .hero-starfield__shooting-star {
     animation: none;
   }
+
+  .qr-redirect-progress {
+    animation-duration: 600ms;
+  }
 }
 
 .chat-caret {
@@ -455,6 +459,21 @@ body {
   }
   50% {
     opacity: 0.2;
+  }
+}
+
+.qr-redirect-progress {
+  width: 100%;
+  transform-origin: left center;
+  animation: qr-redirect-fill var(--redirect-duration, 2200ms) linear forwards;
+}
+
+@keyframes qr-redirect-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 
