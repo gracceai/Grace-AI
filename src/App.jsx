@@ -4,6 +4,7 @@ import AuthRoute from "./components/AuthRoute";
 import { supabase } from "./lib/supabase";
 
 const AISupportChatPage = lazy(() => import("./pages/AISupportChatPage"));
+const GraceChatPage = lazy(() => import("./pages/GraceChatPage"));
 const CrisisSupportPage = lazy(() => import("./pages/CrisisSupportPage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
@@ -80,6 +81,7 @@ function App() {
       <Suspense fallback={<RouteLoader />}>
         <Routes>
         <Route element={<RootEntryPage />} path="/" />
+      <Route element={<GraceChatPage />} path="/chat" />
       <Route element={<QRLaunchPage />} path="/launch" />
       <Route
         element={

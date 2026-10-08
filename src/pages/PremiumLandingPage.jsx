@@ -62,7 +62,7 @@ function PremiumLandingPage() {
       window.location.assign(appUrl);
       return;
     }
-    navigate("/dashboard/ai-support-chat");
+    navigate("/chat");
   };
 
   const scrollToSection = (sectionId) => {

@@ -595,3 +595,79 @@ body {
   background: #334155 !important;
   color: #ffffff !important;
 }
+
+.grace-chat-bg {
+  background-color: #f7f4fb;
+  background-image:
+    radial-gradient(60rem 28rem at 50% -8%, rgba(214, 186, 255, 0.45), transparent 70%),
+    radial-gradient(40rem 24rem at 100% 100%, rgba(169, 206, 199, 0.22), transparent 70%);
+}
+
+.dark .grace-chat-bg {
+  background-color: #090610;
+  background-image:
+    radial-gradient(60rem 28rem at 50% -8%, rgba(110, 77, 161, 0.28), transparent 70%),
+    radial-gradient(40rem 24rem at 100% 100%, rgba(66, 101, 96, 0.16), transparent 70%);
+}
+
+.grace-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+}
+
+.grace-rise {
+  animation: grace-rise 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.grace-pop {
+  animation: grace-pop 160ms ease-out both;
+}
+
+@keyframes grace-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes grace-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grace-rise,
+  .grace-pop {
+    animation: none;
+  }
+}
+
+.grace-composer textarea {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #1e1b2e !important;
+}
+
+.dark .grace-composer textarea {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #f8fafc !important;
+}
+
+.grace-composer textarea::placeholder,
+.dark .grace-composer textarea::placeholder {
+  color: #94a3b8 !important;
+}

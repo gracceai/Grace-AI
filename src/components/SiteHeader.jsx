@@ -128,7 +128,7 @@ function SiteHeader() {
       window.location.assign(appUrl);
       return;
     }
-    navigate("/dashboard/ai-support-chat");
+    navigate("/chat");
   };
 
   return (
@@ -147,13 +147,8 @@ function SiteHeader() {
             onClick={() => navigate(user ? "/dashboard/ai-support-chat" : "/")}
             type="button"
           >
-            <img alt="" className="h-10 w-10 rounded-full shadow-md sm:h-11 sm:w-11" src="/favicon.png" />
-            <span
-              className={`font-plus-jakarta text-xl font-bold tracking-[-0.04em] sm:text-[22px] ${
-                overHero ? "text-white" : "text-primary dark:text-white"
-              }`}
-            >
-              GraceAI
+            <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden sm:h-12 sm:w-12">
+              <img alt="GraceAI" className="h-[152%] w-[152%] max-w-none" src="/favicon.png" />
             </span>
           </button>
 
@@ -236,22 +231,26 @@ function SiteHeader() {
               </div>
             ) : (
               <>
-                <button
-                  className={`hidden px-3 py-2 text-sm font-semibold transition lg:inline-flex ${overHero ? "text-white hover:text-white/75" : "text-slate-700 dark:text-slate-200"}`}
-                  onClick={() => navigate("/login")}
-                  type="button"
-                >
-                  Login
-                </button>
-                <button
-                  className={`hidden min-h-11 items-center rounded-full px-5 text-sm font-bold shadow-lg transition lg:inline-flex ${
-                    overHero ? "hero-primary-button" : "bg-primary text-white hover:bg-primary-container"
-                  }`}
-                  onClick={tryGraceAI}
-                  type="button"
-                >
-                  Try GraceAI
-                </button>
+                {location.pathname !== "/chat" && (
+                  <button
+                    className={`hidden px-3 py-2 text-sm font-semibold transition lg:inline-flex ${overHero ? "text-white hover:text-white/75" : "text-slate-700 dark:text-slate-200"}`}
+                    onClick={() => navigate("/login")}
+                    type="button"
+                  >
+                    Login
+                  </button>
+                )}
+                {location.pathname !== "/chat" && (
+                  <button
+                    className={`hidden min-h-11 items-center rounded-full px-5 text-sm font-bold shadow-lg transition lg:inline-flex ${
+                      overHero ? "hero-primary-button" : "bg-primary text-white hover:bg-primary-container"
+                    }`}
+                    onClick={tryGraceAI}
+                    type="button"
+                  >
+                    Try GraceAI
+                  </button>
+                )}
               </>
             )}
 
@@ -316,7 +315,7 @@ function SiteHeader() {
                   </button>
                 );
               })}
-              {!user && (
+              {!user && location.pathname !== "/chat" && (
                 <>
                   <button
                     className="mt-2 rounded-xl px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/5"

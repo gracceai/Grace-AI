@@ -4,7 +4,8 @@ function SiteFooter() {
       <div className="site-container grid grid-cols-1 gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-start">
         <div>
           <div className="flex items-center gap-2">
-            <img alt="GraceAI Logo" className="h-10 w-auto object-contain dark:brightness-0 dark:invert" src="/logo.png" />
+            <img alt="GraceAI" className="h-11 w-auto dark:hidden" src="/logo-wordmark.png" />
+            <img alt="" className="hidden h-11 w-auto dark:block" src="/logo-wordmark-light.png" />
           </div>
           <p className="mt-5 max-w-md text-sm leading-7 text-slate-500 dark:text-slate-400">
             A private, non-judgemental digital companion helping Namibians take steadier steps

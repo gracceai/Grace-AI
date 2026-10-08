@@ -101,7 +101,7 @@ function QRLaunchPage() {
 
             <button
               className="hero-primary-button mt-8 w-full"
-              onClick={() => navigate("/dashboard/ai-support-chat")}
+              onClick={() => navigate("/chat")}
               type="button"
             >
               Try GraceAI now
